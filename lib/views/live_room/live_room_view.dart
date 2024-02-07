@@ -1,6 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:star_maker/apis/song_api.dart';
+import 'package:star_maker/models/song_model.dart';
+import 'package:star_maker/views/solo_singing/solo_singing.dart';
 import 'package:star_maker/widgets/live_room_widgets/live_room_card.dart';
 import 'package:star_maker/widgets/live_room_widgets/song_card.dart';
 
@@ -12,6 +16,20 @@ class LiveRoomsView extends StatefulWidget {
 }
 
 class _LiveRoomsViewState extends State<LiveRoomsView> {
+  List<Song> songs = [];
+
+  getSongs() async {
+    var songApi = SongApi();
+    songs = await songApi.getAllSongs();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getSongs();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -88,11 +106,28 @@ class _LiveRoomsViewState extends State<LiveRoomsView> {
                 },
               ),
             ),
-            SongCard(
-              image: "http://via.placeholder.com/75x75",
-              songName: 'King Shit',
-              singerName: 'Shubh',
-              onSongTap: () {},
+            ListView.builder(
+              itemCount: songs.length,
+              itemBuilder: (BuildContext context, int index) {
+                Song song = songs[index];
+                return SongCard(
+                  image: song.thumbnail_image_url,
+                  songName: song.name,
+                  singerName: 'Shubh',
+                  onSongTap: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SoloSingView(
+                                roomID: "234",
+                                userID: "231",
+                                song: song,
+                                isHost: true,
+                              )),
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),

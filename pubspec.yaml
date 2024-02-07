@@ -30,10 +30,15 @@ environment:
 dependencies:
   cached_network_image: ^3.3.1
   cupertino_icons: ^1.0.2
+  dio: ^5.4.0
   flutter:
     sdk: flutter
+  flutter_cache_manager: ^3.3.1
+  flutter_lyric: ^2.0.4+6
   gap: ^3.0.1
   is_first_run: ^1.0.0
+  zego_express_engine: ^3.12.4
+  zego_uikit: ^2.18.4
 
 dev_dependencies:
   flutter_lints: ^2.0.0

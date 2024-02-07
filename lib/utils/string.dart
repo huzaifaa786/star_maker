@@ -1,0 +1,1 @@
+const BASE_URL = "https://starmaker.ezmoveportal.com/api/";
