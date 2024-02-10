@@ -18,12 +18,12 @@ class LiveRoomCard extends StatelessWidget {
       onTap: onLiveRoomTap,
       child: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          image: const DecorationImage(
-            image: AssetImage('assets/images/live_card.jpg'),
-            fit: BoxFit.cover,
+         decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.deepPurple[400]!, Colors.pink[400]!],
           ),
           borderRadius: BorderRadius.circular(8),
+
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,6 +45,7 @@ class LiveRoomCard extends StatelessWidget {
                       Text(
                         'Live Room',
                         style: TextStyle(
+                          fontWeight: FontWeight.w900,
                           fontSize: 12,
                           color: Colors.pink[300],
                         ),
@@ -60,7 +61,7 @@ class LiveRoomCard extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 18,
-                      color: Colors.black.withOpacity(0.8),
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -91,12 +92,12 @@ class LiveRoomCard extends StatelessWidget {
                 Row(
                   children: [
                     Icon(CupertinoIcons.person,
-                        size: 14, color: Colors.deepPurple[300]),
+                        size: 14, color: Colors.white),
                     const Gap(2),
                     Text(
                       '$audience',
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.deepPurple[300]),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.white),
                     )
                   ],
                 )
