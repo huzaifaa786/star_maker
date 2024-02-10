@@ -58,16 +58,9 @@ class LiveRoomCard extends StatelessWidget {
                   child: Text(
                     '$name',
                     style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
                       color: Colors.black.withOpacity(0.8),
-                      shadows: <Shadow>[
-                        Shadow(
-                          offset: const Offset(2, 3.0),
-                          blurRadius: 2.0,
-                          color: Colors.grey[400]!,
-                        ),
-                      ],
                     ),
                   ),
                 ),
@@ -103,7 +96,7 @@ class LiveRoomCard extends StatelessWidget {
                     Text(
                       '$audience',
                       style:
-                          TextStyle(fontSize: 12, color: Colors.deepPurple[300]),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.deepPurple[300]),
                     )
                   ],
                 )

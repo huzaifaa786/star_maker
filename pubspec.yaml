@@ -41,6 +41,7 @@ dependencies:
   zego_express_engine: ^3.12.4
   zego_uikit: ^2.18.4
   zego_zim: ^2.14.0
+  simple_gradient_text: ^1.3.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0
@@ -60,6 +61,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/fonts/
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -70,17 +72,21 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
+  fonts:
+    - family: Proxima Nova
+      fonts:
+        - asset: assets/fonts/ProximaNova-Black.ttf
+        - asset: assets/fonts/ProximaNova-BlackIt.ttf
+        - asset: assets/fonts/ProximaNova-Bold.ttf
+        - asset: assets/fonts/ProximaNova-BoldIt.ttf
+        - asset: assets/fonts/ProximaNova-Extrabld.ttf
+        - asset: assets/fonts/ProximaNova-ExtrabldIt.ttf
+        - asset: assets/fonts/ProximaNova-Light.ttf
+        - asset: assets/fonts/ProximaNova-LightIt.ttf
+        - asset: assets/fonts/ProximaNova-Regular.ttf
+        - asset: assets/fonts/ProximaNova-Semibold.ttf
+        - asset: assets/fonts/ProximaNova-SemiboldIt.ttf
+        - asset: assets/fonts/ProximaNova-ThinIt.ttf
+        - asset: assets/fonts/ProximaNovaT-Thin.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

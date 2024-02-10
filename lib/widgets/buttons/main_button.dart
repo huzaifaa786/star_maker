@@ -16,10 +16,10 @@ class MainButton extends StatelessWidget {
       onTap: onButtonTap,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8,
-        height: 45,
+        height: 75,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [Colors.deepPurple[400]!, Colors.pink[200]!]),
+              colors: [Colors.deepPurple[600]!, Colors.red[500]!]),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(12),
             bottomRight: Radius.circular(12),
@@ -33,8 +33,8 @@ class MainButton extends StatelessWidget {
             Text(
               '$title',
               style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
                   color: Colors.white),
             ),
           ],
