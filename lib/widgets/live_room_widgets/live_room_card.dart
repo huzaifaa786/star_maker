@@ -18,12 +18,12 @@ class LiveRoomCard extends StatelessWidget {
       onTap: onLiveRoomTap,
       child: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          image: const DecorationImage(
-            image: AssetImage('assets/images/live_card.jpg'),
-            fit: BoxFit.cover,
+         decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.deepPurple[300]!, Colors.pink[300]!],
           ),
           borderRadius: BorderRadius.circular(8),
+
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
