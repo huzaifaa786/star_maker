@@ -3,7 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
+import 'package:star_maker/models/song_model.dart';
 import 'package:star_maker/utils/zegocloud_token.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/components/audio_room/seat_item_view.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/components/pop_up_manager.dart';
@@ -19,18 +21,22 @@ import 'package:star_maker/views/live_room/multi_singer_room/internal/sdk/zim/zi
 import 'package:star_maker/views/live_room/multi_singer_room/internal/zego_sdk_key_center.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/internal/zego_sdk_manager.dart';
 
-
 class MultiSingersKaraoke extends StatefulWidget {
   final String roomID;
   final ZegoLiveAudioRoomRole role;
+  final Song song;
   const MultiSingersKaraoke(
-      {super.key, required this.roomID, required this.role});
+      {super.key,
+      required this.roomID,
+      required this.role,
+      required this.song});
 
   @override
   State<MultiSingersKaraoke> createState() => _MultiSingersKaraokeState();
 }
 
 class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
+  final cacheManager = DefaultCacheManager();
   List<ZegoInRoomMessage> messages = [];
   List<StreamSubscription> subscriptions = [];
   TextEditingController textEditingController = TextEditingController();
@@ -41,14 +47,16 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   final popUpManager = ZegoPopUpManager();
 
   // ********** LYRICS ****************
+  String lyricsContent = "";
+  String musicPath = "";
+  String lyricsPath = "";
   int playProgress = 0;
   var lyricUI = UINetease(
     defaultSize: 30,
     defaultExtSize: 20,
   );
   var playing = false;
-  var lyricModel =
-      LyricsModelBuilder.create().bindLyricToMain('').getModel();
+  var lyricModel = LyricsModelBuilder.create().bindLyricToMain('').getModel();
   // ********** LYRICS ****************
 
   // ********** Music ****************
@@ -79,7 +87,9 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     if (widget.role == ZegoLiveAudioRoomRole.audience) {
       _eventListeners();
     }
+
     loginRoom();
+    loadMusicLyricsData();
   }
 
   send() {
@@ -163,7 +173,6 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
 
   _eventListeners() async {
     ZegoExpressEngine.onPlayerRecvSEI = onPlayerRecvSEI;
-    print('BBBBBBBBBBBBBBBBBBBDDDDDDDDDDDDDDD');
   }
 
   setEventHandler() async {
@@ -195,8 +204,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     if (mediaPlayer != null) {
       await mediaPlayer!.enableAux(true);
       await mediaPlayer!
-          .loadResource(
-              "https://drive.usercontent.google.com/u/0/uc?id=10BZKh-i7PGEVZAIlD-jwb4HUMHjMtsw9&export=download")
+          .loadResource(musicPath)
           .then((ZegoMediaPlayerLoadResourceResult result) => {
                 debugPrint(result.errorCode.toString()),
                 if (result.errorCode == 0)
@@ -213,6 +221,9 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   @override
   void dispose() {
     super.dispose();
+    if (mediaPlayer != null) {
+      ZegoExpressEngine.instance.destroyMediaPlayer(mediaPlayer!);
+    }
     ZegoLiveAudioRoomManager().logoutRoom();
     for (final subscription in subscriptions) {
       subscription.cancel();
@@ -238,6 +249,25 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
             .showSnackBar(SnackBar(content: Text('take seat failed: $error')));
       });
     }
+  }
+
+  loadMusicLyricsData() async {
+    var fetchLyricsFile =
+        await cacheManager.getSingleFile(widget.song.lyrics_file_url!);
+    var fetchMusicFile =
+        await cacheManager.getSingleFile(widget.song.music_file_url!);
+    musicPath = fetchMusicFile.path;
+    lyricsPath = fetchLyricsFile.path;
+
+    await fetchLyricsFile.readAsString().then((value) {
+      setState(() {
+        lyricsContent = value;
+      });
+    });
+
+    lyricModel =
+        LyricsModelBuilder.create().bindLyricToMain(lyricsContent).getModel();
+    setState(() {});
   }
 
   @override

@@ -1,9 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:star_maker/apis/song_api.dart';
 import 'package:star_maker/models/song_model.dart';
+import 'package:star_maker/views/live_room/multi_singer_room/multi_singer.dart';
+import 'package:star_maker/views/live_room/multi_singer_room/internal/business/business_define.dart';
 import 'package:star_maker/views/solo_singing/solo_singing.dart';
 import 'package:star_maker/widgets/live_room_widgets/live_room_card.dart';
 import 'package:star_maker/widgets/live_room_widgets/song_card.dart';
@@ -17,6 +21,8 @@ class LiveRoomsView extends StatefulWidget {
 
 class _LiveRoomsViewState extends State<LiveRoomsView> {
   List<Song> songs = [];
+  final roomIDController =
+      TextEditingController(text: Random().nextInt(9999999).toString());
 
   getSongs() async {
     var songApi = SongApi();
@@ -93,7 +99,9 @@ class _LiveRoomsViewState extends State<LiveRoomsView> {
                   return LiveRoomCard(
                     name: 'Abdur Rehman',
                     audience: '999',
-                    image: "https://robohash.org/" + DateTime.now().millisecondsSinceEpoch.toString()  + ".png",
+                    image: "https://robohash.org/" +
+                        DateTime.now().millisecondsSinceEpoch.toString() +
+                        ".png",
                     onLiveRoomTap: () {},
                   );
                 },
@@ -111,11 +119,10 @@ class _LiveRoomsViewState extends State<LiveRoomsView> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => SoloSingView(
-                                roomID: "234",
-                                userID: "231",
+                          builder: (context) => MultiSingersKaraoke(
+                                roomID: roomIDController.text,
+                                role: ZegoLiveAudioRoomRole.host,
                                 song: song,
-                                isHost: true,
                               )),
                     );
                   },

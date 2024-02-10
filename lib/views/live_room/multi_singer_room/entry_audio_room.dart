@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:star_maker/views/live_room/multi_singer_room/home.dart';
+import 'package:star_maker/views/live_room/multi_singer_room/multi_singer.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/internal/business/business_define.dart';
 
 class AudioRoomEntry extends StatefulWidget {
@@ -39,12 +39,14 @@ class _AudioRoomEntryState extends State<AudioRoomEntry> {
 
   Widget liveAudioRoomButton(ZegoLiveAudioRoomRole role) {
     return ElevatedButton(
-      onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                MultiSingersKaraoke(roomID: roomIDController.text, role: role)),
-      ),
+      onPressed:(){
+        /// Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) =>
+      //           MultiSingersKaraoke(roomID: roomIDController.text, role: role)),
+      // ),
+      },
       child: role == ZegoLiveAudioRoomRole.host
           ? const Text('Host enter')
           : const Text('Audience enter'),
