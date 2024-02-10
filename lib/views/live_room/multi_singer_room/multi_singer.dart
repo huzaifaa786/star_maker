@@ -105,6 +105,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
             timestamp: DateTime.now().millisecondsSinceEpoch,
             messageID: value.messageID));
         textEditingController.clear();
+        setState(() {});
       } else {}
     });
   }
@@ -118,6 +119,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
           timestamp: element.sendTime,
           messageID: element.message));
     }
+    setState(() {});
   }
 
   void loginRoom() {
@@ -281,7 +283,8 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
             Positioned(top: 30, left: 10, child: roomTitle()),
             Positioned(top: 30, right: 20, child: leaveButton()),
             Positioned(top: 100, child: seatListView()),
-            Positioned(bottom: 170, child: buildReaderWidget()),
+            Positioned(bottom: 270, child: buildReaderWidget()),
+            Positioned(bottom: 90, left: 20, child: buildMessagesWidget()),
             Positioned(bottom: 20, left: 0, right: 0, child: bottomView()),
             // messageList(),
           ],
@@ -312,6 +315,24 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
           )
         ],
       ),
+    );
+  }
+
+  Stack buildMessagesWidget() {
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.all(0),
+          height: MediaQuery.of(context).size.height * 0.2,
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: ListView.builder(
+              itemCount: messages.length,
+              itemBuilder: ((context, index) {
+                return Text(messages[index].message,
+                    style: TextStyle(color: Colors.white));
+              })),
+        )
+      ],
     );
   }
 
