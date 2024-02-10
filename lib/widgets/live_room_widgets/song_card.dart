@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:gradient_borders/gradient_borders.dart';
 
 class SongCard extends StatelessWidget {
   const SongCard(
@@ -22,34 +23,19 @@ class SongCard extends StatelessWidget {
             margin: const EdgeInsets.only(right: 12, left: 12),
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.pink[100]!,
-                      offset: const Offset(1, 1),
-                      blurRadius: 12),
-                  BoxShadow(
-                      color: Colors.deepPurple[100]!,
-                      offset: const Offset(-1, -1),
-                      blurRadius: 12),
-                ]),
+                border: const GradientBoxBorder(
+                  gradient: LinearGradient(
+                    colors: [Colors.deepPurple, Colors.red],
+                  ),
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(16)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
                     Container(
-                      decoration: BoxDecoration(boxShadow: [
-                        BoxShadow(
-                            color: Colors.pink[100]!,
-                            offset: const Offset(1, 1),
-                            blurRadius: 8),
-                        BoxShadow(
-                            color: Colors.deepPurple[100]!,
-                            offset: const Offset(-1, -1),
-                            blurRadius: 8),
-                      ]),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: CachedNetworkImage(
@@ -72,38 +58,21 @@ class SongCard extends StatelessWidget {
                           '$songName',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 17,
                             foreground: Paint()
                               ..shader = const LinearGradient(
-                                colors: [
-                                  Colors.deepPurple,
-                                  Colors.pinkAccent
-                                ],
+                                colors: [Colors.deepPurple, Colors.pinkAccent],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ).createShader(
                                   const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
-                            shadows: <Shadow>[
-                              Shadow(
-                                offset: const Offset(3.0, 4.0),
-                                blurRadius: 3.0,
-                                color: Colors.grey[400]!,
-                              ),
-                            ],
                           ),
                         ),
                         Text(
                           'By $singerName',
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
-                            fontSize: 12,
-                            shadows: <Shadow>[
-                              Shadow(
-                                offset: const Offset(2, 3.0),
-                                blurRadius: 2.0,
-                                color: Colors.grey[400]!,
-                              ),
-                            ],
+                            fontSize: 14
                           ),
                         ),
                       ],
@@ -115,18 +84,8 @@ class SongCard extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                        color: Colors.deepPurple.shade100,
-                        borderRadius: BorderRadius.circular(45),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.pink[100]!,
-                              offset: const Offset(2, 2),
-                              blurRadius: 12),
-                          BoxShadow(
-                              color: Colors.deepPurple[100]!,
-                              offset: const Offset(-2, -2),
-                              blurRadius: 12),
-                        ]),
+                        color: Colors.deepPurple[300],
+                        borderRadius: BorderRadius.circular(45)),
                     child: const Icon(
                       CupertinoIcons.play,
                       color: Colors.white,
