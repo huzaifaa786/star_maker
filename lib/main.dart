@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:star_maker/views/splash/splash_view.dart';
 
 import 'package:zego_uikit/zego_uikit.dart';
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Star Maker',
       theme: ThemeData(
         fontFamily: 'Proxima Nova',
