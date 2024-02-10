@@ -41,27 +41,20 @@ class _LiveRoomsViewState extends State<LiveRoomsView> {
             'Star Maker',
             style: TextStyle(
               fontWeight: FontWeight.w700,
-              fontSize: 22,
+              fontSize: 28,
               foreground: Paint()
                 ..shader = LinearGradient(
                   colors: [Colors.deepPurple, Colors.pinkAccent],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
-              shadows: <Shadow>[
-                Shadow(
-                  offset: Offset(4.0, 4.0),
-                  blurRadius: 3.0,
-                  color: Colors.grey[400]!,
-                ),
-              ],
             ),
           ),
           bottom: TabBar(
             indicatorSize: TabBarIndicatorSize.tab,
             dividerColor: Colors.transparent,
-            indicatorColor: Colors.deepPurple[100]!,
-            labelColor: Colors.deepPurple[400]!,
+            indicatorColor: Colors.deepPurple[800]!,
+            labelColor: Colors.deepPurple[800]!,
             tabs: [
               Tab(
                 child: Text(
@@ -100,7 +93,7 @@ class _LiveRoomsViewState extends State<LiveRoomsView> {
                   return LiveRoomCard(
                     name: 'Abdur Rehman',
                     audience: '999',
-                    image: "http://via.placeholder.com/75x75",
+                    image: "https://robohash.org/" + DateTime.now().millisecondsSinceEpoch.toString()  + ".png",
                     onLiveRoomTap: () {},
                   );
                 },
