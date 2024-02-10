@@ -122,7 +122,7 @@ packages:
     source: hosted
     version: "5.4.0"
   encrypt:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: encrypt
       sha256: "62d9aa4670cc2a8798bab89b39fc71b6dfbacf615de6cf5001fb39f7e4a996a2"
@@ -725,6 +725,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.18.4"
+  zego_zim:
+    dependency: "direct main"
+    description:
+      name: zego_zim
+      sha256: "112463c4348d54ba2d39e2edc90c345d106436fb1df64e4ba972e4c4a727bdfa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.14.0"
   zego_zpns:
     dependency: transitive
     description:
