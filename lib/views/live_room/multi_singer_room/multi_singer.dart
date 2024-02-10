@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:star_maker/models/song_model.dart';
@@ -93,31 +95,41 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   }
 
   send() {
-    ZegoExpressEngine.instance
-        .sendBarrageMessage(widget.roomID, textEditingController.text)
-        .then((value) {
-      if (value.errorCode == 0) {
-        final expressService = ZEGOSDKManager().expressService;
-        messages.add(ZegoInRoomMessage(
-            user: ZegoUser(expressService.currentUser!.userID,
-                expressService.currentUser!.userName),
-            message: textEditingController.text,
-            timestamp: DateTime.now().millisecondsSinceEpoch,
-            messageID: value.messageID));
-        textEditingController.clear();
-        setState(() {});
-      } else {}
-    });
+    if (textEditingController.text.isNotEmpty) {
+      ZegoExpressEngine.instance
+          .sendBarrageMessage(widget.roomID, textEditingController.text)
+          .then((value) {
+        if (value.errorCode == 0) {
+          final expressService = ZEGOSDKManager().expressService;
+
+          messages.add(ZegoInRoomMessage(
+              user: ZegoUser(expressService.currentUser!.userID,
+                  expressService.currentUser!.userName),
+              message: textEditingController.text,
+              timestamp: DateTime.now().millisecondsSinceEpoch,
+              messageID: value.messageID));
+          textEditingController.clear();
+          setState(() {});
+        } else {}
+      });
+    }
   }
 
   void onIMreceiveMessage(
       String roomID, List<ZegoBarrageMessageInfo> messageList) async {
-    for (var element in messageList) {
-      messages.add(ZegoInRoomMessage(
-          user: element.fromUser,
-          message: element.message,
-          timestamp: element.sendTime,
-          messageID: element.message));
+    for (var msg in messageList) {
+      // Check if the message ID already exists in the messages list
+      bool isUnique =
+          messages.every((element) => element.messageID != msg.messageID);
+
+      if (isUnique) {
+        messages.add(ZegoInRoomMessage(
+          user: msg.fromUser,
+          message: msg.message,
+          timestamp: msg.sendTime,
+          messageID: msg.messageID,
+        ));
+      }
     }
     setState(() {});
   }
@@ -277,6 +289,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     return SafeArea(
       top: false,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
             backgroundImage(),
@@ -318,6 +331,63 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     );
   }
 
+  Widget message(ZegoInRoomMessage message) {
+    final padding = EdgeInsets.fromLTRB(20, 10, 20, 10);
+    return RichText(
+      maxLines: null,
+      overflow: TextOverflow.ellipsis,
+      text: TextSpan(
+        children: [
+          WidgetSpan(
+            child: Container(
+                width: 12 + padding.vertical / 2 - 1,
+                height: 12 + padding.vertical / 2 - 1,
+                margin: EdgeInsets.only(right: 5),
+                child: CachedNetworkImage(
+                  imageUrl:
+                      'https://robohash.org/${message.user.userID}.png?set=set4',
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(
+                          value: downloadProgress.progress),
+                  errorWidget: (context, url, error) {
+                    return Text('');
+                  },
+                )),
+          ),
+
+          TextSpan(
+            text: message.user.userName,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+          TextSpan(
+            text: '\n\t\t         ${message.message}',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: Colors.white,
+            ),
+          ),
+          // ...messageAvatar(padding: padding),
+          // ...messageName(),
+          // ...messageText(),
+        ],
+      ),
+    );
+  }
+
   Stack buildMessagesWidget() {
     return Stack(
       children: [
@@ -328,8 +398,31 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
           child: ListView.builder(
               itemCount: messages.length,
               itemBuilder: ((context, index) {
-                return Text(messages[index].message,
-                    style: TextStyle(color: Colors.white));
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Card(
+                      color: const Color(0xff2a2a2a).withOpacity(0.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(26)),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        child: Stack(
+                          children: [
+                            message(messages[index])
+                            // message(),
+                            // Positioned(
+                            //   top: 1.zR,
+                            //   right: 1.zR,
+                            //   child: state(),
+                            // ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
               })),
         )
       ],
@@ -396,6 +489,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  messageInput(),
                   leaveSeatButton(),
                   micorphoneButton(),
                 ],
@@ -407,6 +501,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  messageInput(),
                   requestTakeSeatButton(),
                 ],
               ),
@@ -500,15 +595,30 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   }
 
   Widget messageInput() {
+    // return SizedBox(
+    //   height: 100,
+    //   width: 200,
+    //   child: TextField(
+    //     controller: textEditingController,
+    //     onSubmitted: (msg) {
+    //       send();
+    //     },
+    //   ),
+    // );
     return ZegoInRoomMessageInputBoardButton(
       textEditingController: textEditingController,
-      onTap: send(),
-      rootNavigator: true,
+      onTap: () {
+        send();
+        Navigator.of(
+          context,
+        ).pop();
+      },
+      rootNavigator: false,
       onSheetPopUp: (int key) {
-        popUpManager.addAPopUpSheet(key);
+        // popUpManager.addAPopUpSheet(key);
       },
       onSheetPop: (int key) {
-        popUpManager.removeAPopUpSheet(key);
+        // popUpManager.removeAPopUpSheet(key);
       },
     );
   }

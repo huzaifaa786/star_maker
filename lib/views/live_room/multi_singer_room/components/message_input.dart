@@ -76,6 +76,7 @@ class _ZegoInRoomMessageInputState extends State<ZegoInRoomMessageInput> {
   }
 
   void onFocusChange() {
+    
     widget.focusNotifier?.value = focusNode.hasFocus;
   }
 
@@ -127,7 +128,7 @@ class _ZegoInRoomMessageInputState extends State<ZegoInRoomMessageInput> {
         child: TextField(
           enabled: widget.enabled,
           keyboardType: TextInputType.text,
-          minLines: 1,
+       
           maxLines: null,
           autofocus: widget.autofocus,
           focusNode: focusNode,
@@ -171,14 +172,7 @@ class _ZegoInRoomMessageInputState extends State<ZegoInRoomMessageInput> {
       valueListenable: isEmptyNotifier,
       builder: (context, bool isEmpty, Widget? child) {
         return ZegoTextIconButton(
-          onPressed: () {
-            if (!isEmpty) {
-              widget.onTap;
-              widget.valueNotifier?.value = '';
-
-              widget.onSubmit?.call();
-            }
-          },
+          onPressed: widget.onTap,
           icon: isEmpty
               ? Image.asset(
                   'assets/icons/send_disable.png',
