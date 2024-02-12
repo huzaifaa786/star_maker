@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
+import 'package:star_maker/apis/room_api.dart';
 import 'package:star_maker/models/song_model.dart';
 import 'package:star_maker/utils/zegocloud_token.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/components/audio_room/seat_item_view.dart';
@@ -42,6 +43,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   final cacheManager = DefaultCacheManager();
   List<ZegoInRoomMessage> messages = [];
   List<StreamSubscription> subscriptions = [];
+  final roomApi = new RoomApi();
   TextEditingController textEditingController = TextEditingController();
   String? currentRequestID;
   ValueNotifier<bool> isApplyStateNoti = ValueNotifier(false);
@@ -136,7 +138,9 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   }
 
   loginRoom() async {
+    await createRoom();
     await Permission.microphone.request();
+
     ZegoExpressEngine.onIMRecvBarrageMessage = onIMreceiveMessage;
     final token = kIsWeb
         ? ZegoTokenUtils.generateToken(SDKKeyCenter.appID,
@@ -153,6 +157,21 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
             SnackBar(content: Text('login room failed: ${result.errorCode}')));
       }
     });
+  }
+
+  createRoom() async {
+    if (widget.role == ZegoLiveAudioRoomRole.host) {
+      var data = {
+        'room_id': widget.roomID,
+        'host_id': ZEGOSDKManager().currentUser!.userID,
+        'host_name': ZEGOSDKManager().currentUser!.userName,
+        'audience_count': 1,
+        'room_type': 'multi',
+        'room_status': 'live',
+        'song_id': widget.song.id.toString(),
+      };
+      await roomApi.createRoom(data);
+    }
   }
 
   void sendSEIMessage(int millisecond) {
@@ -240,6 +259,8 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     if (mediaPlayer != null) {
       ZegoExpressEngine.instance.destroyMediaPlayer(mediaPlayer!);
     }
+    roomApi.endRoom(widget.roomID);
+
     ZegoLiveAudioRoomManager().logoutRoom();
     for (final subscription in subscriptions) {
       subscription.cancel();
@@ -869,6 +890,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
 
   void onExpressRoomStateChanged(ZegoRoomStateEvent event) {
     debugPrint('AudioRoomPage:onExpressRoomStateChanged: $event');
+    debugPrint('EXPPPPPPPPPPPPPPPPPPPPPPPPPPPPP: $event');
     if (event.errorCode != 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -888,6 +910,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
 
   void onZIMRoomStateChanged(ZIMServiceRoomStateChangedEvent event) {
     debugPrint('AudioRoomPage:onZIMRoomStateChanged: $event');
+    debugPrint('ZIMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM: $event');
     if ((event.event != ZIMRoomEvent.success) &&
         (event.state != ZIMRoomState.connected)) {
       ScaffoldMessenger.of(context).showSnackBar(
