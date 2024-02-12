@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:star_maker/models/song_model.dart';
 import 'package:zego_express_engine/zego_express_engine.dart';
 
@@ -52,7 +53,8 @@ class _SoloSingViewState extends State<SoloSingView> {
   ZegoMediaPlayer? player;
 
   loginRoom() async {
-    
+    await Permission.microphone.request();
+
     await ZegoExpressEngine.createEngineWithProfile(profile);
     setEventHandler();
     userID = widget.userID;
@@ -265,7 +267,6 @@ class _SoloSingViewState extends State<SoloSingView> {
       size: Size(MediaQuery.of(context).size.width,
           MediaQuery.of(context).size.height * 0.5),
       emptyBuilder: () => Center(
-        
         child: Text(
           "No lyrics",
           style: lyricUI.getOtherMainTextStyle(),
