@@ -12,6 +12,7 @@ import 'package:star_maker/utils/zegocloud_token.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/components/audio_room/seat_item_view.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/components/pop_up_manager.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/components/text_icon_button.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:star_maker/views/live_room/multi_singer_room/components/zego_apply_cohost_list_page.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/internal/business/business_define.dart';
@@ -134,7 +135,8 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     setState(() {});
   }
 
-  void loginRoom() {
+  loginRoom() async {
+    await Permission.microphone.request();
     ZegoExpressEngine.onIMRecvBarrageMessage = onIMreceiveMessage;
     final token = kIsWeb
         ? ZegoTokenUtils.generateToken(SDKKeyCenter.appID,
@@ -363,7 +365,6 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
                   },
                 )),
           ),
-
           TextSpan(
             text: message.user.userName,
             style: TextStyle(
@@ -380,9 +381,6 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
               color: Colors.white,
             ),
           ),
-          // ...messageAvatar(padding: padding),
-          // ...messageName(),
-          // ...messageText(),
         ],
       ),
     );
@@ -409,15 +407,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                         child: Stack(
-                          children: [
-                            message(messages[index])
-                            // message(),
-                            // Positioned(
-                            //   top: 1.zR,
-                            //   right: 1.zR,
-                            //   child: state(),
-                            // ),
-                          ],
+                          children: [message(messages[index])],
                         ),
                       ),
                     ),

@@ -68,13 +68,13 @@ class SongCard extends StatelessWidget {
                                   const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
                           ),
                         ),
-                        Text(
-                          'By $singerName',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14
-                          ),
-                        ),
+                        // Text(
+                        //   'By $singerName',
+                        //   style: TextStyle(
+                        //     fontWeight: FontWeight.w500,
+                        //     fontSize: 14
+                        //   ),
+                        // ),
                       ],
                     )
                   ],

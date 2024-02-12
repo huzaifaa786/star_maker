@@ -121,7 +121,7 @@ class _LiveRoomsViewState extends State<LiveRoomsView> {
                       MaterialPageRoute(
                           builder: (context) => MultiSingersKaraoke(
                                 roomID: '4587946',
-                                role: ZegoLiveAudioRoomRole.audience,
+                                role: ZegoLiveAudioRoomRole.host,
                                 song: song,
                               )),
                     );
