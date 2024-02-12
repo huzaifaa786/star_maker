@@ -267,7 +267,10 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     if (mediaPlayer != null) {
       ZegoExpressEngine.instance.destroyMediaPlayer(mediaPlayer!);
     }
-    roomApi.endRoom(widget.roomID);
+    if (widget.role == ZegoLiveAudioRoomRole.host) {
+      roomApi.endRoom(widget.roomID);
+    }
+    
 
     ZegoLiveAudioRoomManager().logoutRoom();
     for (final subscription in subscriptions) {
