@@ -1,3 +1,5 @@
+import 'package:star_maker/models/song_model.dart';
+
 class RoomModel {
   late int id;
   String? roomId;
@@ -6,7 +8,7 @@ class RoomModel {
   int? audienceCount;
   String? roomType;
   String? roomStatus;
-  String? songId;
+  Song? song;
 
   RoomModel({
     required this.id,
@@ -16,19 +18,19 @@ class RoomModel {
     this.audienceCount,
     this.roomType,
     this.roomStatus,
-    this.songId,
+    this.song,
   });
 
   factory RoomModel.fromJson(Map<String, dynamic> json) {
     return RoomModel(
       id: json['id'],
-      roomId: json['roomId'],
-      hostId: json['hostId'],
-      hostName: json['hostName'],
-      audienceCount: json['audienceCount'],
-      roomType: json['roomType'],
-      roomStatus: json['roomStatus'],
-      songId: json['songId'],
+      roomId: json['room_id'],
+      hostId: json['host_id'],
+      hostName: json['host_name'],
+      audienceCount: json['audience_count'],
+      roomType: json['room_type'],
+      roomStatus: json['room_status'],
+      song: Song.fromJson(json['song']),
     );
   }
 }

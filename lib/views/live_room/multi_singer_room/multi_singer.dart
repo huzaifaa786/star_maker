@@ -140,7 +140,10 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   loginRoom() async {
     await createRoom();
     await Permission.microphone.request();
-
+    if (widget.role == ZegoLiveAudioRoomRole.host) {
+      ZegoExpressEngine.onRoomOnlineUserCountUpdate =
+          onRoomOnlineUserCountUpdate;
+    }
     ZegoExpressEngine.onIMRecvBarrageMessage = onIMreceiveMessage;
     final token = kIsWeb
         ? ZegoTokenUtils.generateToken(SDKKeyCenter.appID,
@@ -204,6 +207,11 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     } catch (e) {
       print(e);
     }
+  }
+
+  onRoomOnlineUserCountUpdate(String roomId, int count) async {
+    print('room Updatedddddddddddddddd');
+    await roomApi.updateRoomCount(roomId, count);
   }
 
   _eventListeners() async {

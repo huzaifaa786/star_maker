@@ -4,7 +4,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:star_maker/apis/room_api.dart';
 import 'package:star_maker/apis/song_api.dart';
+import 'package:star_maker/models/room_model.dart';
 import 'package:star_maker/models/song_model.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/multi_singer.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/internal/business/business_define.dart';
@@ -21,6 +23,7 @@ class LiveRoomsView extends StatefulWidget {
 
 class _LiveRoomsViewState extends State<LiveRoomsView> {
   List<Song> songs = [];
+  List<RoomModel> rooms = [];
   final roomIDController =
       TextEditingController(text: Random().nextInt(9999999).toString());
 
@@ -30,8 +33,15 @@ class _LiveRoomsViewState extends State<LiveRoomsView> {
     setState(() {});
   }
 
+  getRooms() async {
+    var roomApi = RoomApi();
+    rooms = await roomApi.getMultiRooms();
+    setState(() {});
+  }
+
   @override
   void initState() {
+    getRooms();
     getSongs();
     super.initState();
   }
@@ -94,15 +104,24 @@ class _LiveRoomsViewState extends State<LiveRoomsView> {
                   mainAxisSpacing: 8.0,
                   mainAxisExtent: 170,
                 ),
-                itemCount: 6,
+                itemCount: rooms.length,
                 itemBuilder: (BuildContext context, int index) {
+                  RoomModel room = rooms[index];
                   return LiveRoomCard(
-                    name: 'Abdur Rehman',
-                    audience: '999',
-                    image: "https://robohash.org/" +
-                        DateTime.now().millisecondsSinceEpoch.toString() +
-                        ".png",
-                    onLiveRoomTap: () {},
+                    name: room.hostName,
+                    audience: room.audienceCount.toString(),
+                    image: "https://robohash.org/${room.hostId}.png?set=set4",
+                    onLiveRoomTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MultiSingersKaraoke(
+                                  roomID: room.roomId!,
+                                  role: ZegoLiveAudioRoomRole.host,
+                                  song: room.song!,
+                                )),
+                      );
+                    },
                   );
                 },
               ),
@@ -116,11 +135,12 @@ class _LiveRoomsViewState extends State<LiveRoomsView> {
                   songName: song.name,
                   singerName: 'Shubh',
                   onSongTap: () async {
+                    String roomId = Random().nextInt(9999999).toString();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => MultiSingersKaraoke(
-                                roomID: '4587946',
+                                roomID: roomId,
                                 role: ZegoLiveAudioRoomRole.host,
                                 song: song,
                               )),
