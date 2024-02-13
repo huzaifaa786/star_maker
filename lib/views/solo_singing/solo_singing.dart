@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:star_maker/apis/room_api.dart';
 import 'package:star_maker/models/song_model.dart';
 import 'package:zego_express_engine/zego_express_engine.dart';
 
@@ -35,7 +36,7 @@ class _SoloSingViewState extends State<SoloSingView> {
   String currentLyrics = "";
   bool isHost = false;
   Map<Duration, String>? lyrics;
-
+  final roomApi = new RoomApi();
   int playProgress = 0;
   int audiencePlayProgress = 0;
   String lyricsContent = "";
@@ -53,7 +54,12 @@ class _SoloSingViewState extends State<SoloSingView> {
   ZegoMediaPlayer? player;
 
   loginRoom() async {
+    await createRoom();
     await Permission.microphone.request();
+    if (widget.isHost == true) {
+      ZegoExpressEngine.onRoomOnlineUserCountUpdate =
+          onRoomOnlineUserCountUpdate;
+    }
 
     await ZegoExpressEngine.createEngineWithProfile(profile);
     setEventHandler();
@@ -70,6 +76,26 @@ class _SoloSingViewState extends State<SoloSingView> {
       await createMediaPlayer();
     }
     setState(() {});
+  }
+
+  onRoomOnlineUserCountUpdate(String roomId, int count) async {
+
+    await roomApi.updateRoomCount(roomId, count);
+  }
+
+  createRoom() async {
+    if (widget.isHost == true) {
+      var data = {
+        'room_id': widget.roomID,
+        'host_id': widget.userID,
+        'host_name': widget.userID + '_user',
+        'audience_count': 1,
+        'room_type': 'solo',
+        'room_status': 'live',
+        'song_id': widget.song.id.toString(),
+      };
+      await roomApi.createRoom(data);
+    }
   }
 
   loadMusicLyricsData() async {
@@ -215,6 +241,9 @@ class _SoloSingViewState extends State<SoloSingView> {
 
   @override
   void dispose() {
+    if (widget.isHost == true) {
+      roomApi.endRoom(widget.roomID);
+    }
     ZegoExpressEngine.destroyEngine();
     super.dispose();
   }

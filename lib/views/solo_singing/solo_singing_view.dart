@@ -1,6 +1,14 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:star_maker/apis/room_api.dart';
+import 'package:star_maker/apis/song_api.dart';
+import 'package:star_maker/models/room_model.dart';
+import 'package:star_maker/models/song_model.dart';
+import 'package:star_maker/views/live_room/multi_singer_room/internal/zego_sdk_manager.dart';
+import 'package:star_maker/views/solo_singing/solo_singing.dart';
 import 'package:star_maker/widgets/live_room_widgets/song_card.dart';
 import 'package:star_maker/widgets/solo_singing_widgets/solo_singing_card.dart';
 
@@ -12,6 +20,30 @@ class SoloSingingView extends StatefulWidget {
 }
 
 class _SoloSingingViewState extends State<SoloSingingView> {
+  List<Song> songs = [];
+  List<RoomModel> rooms = [];
+  final roomIDController =
+      TextEditingController(text: Random().nextInt(9999999).toString());
+
+  getSongs() async {
+    var songApi = SongApi();
+    songs = await songApi.getAllSongs();
+    setState(() {});
+  }
+
+  getRooms() async {
+    var roomApi = RoomApi();
+    rooms = await roomApi.getSoloRooms();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getRooms();
+    getSongs();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -77,22 +109,52 @@ class _SoloSingingViewState extends State<SoloSingingView> {
                   mainAxisSpacing: 8.0,
                   mainAxisExtent: 170,
                 ),
-                itemCount: 6,
+                itemCount: rooms.length,
                 itemBuilder: (BuildContext context, int index) {
+                  RoomModel room = rooms[index];
                   return SoloSingingCard(
-                    name: 'Abdur Rehman',
-                    audience: '999',
-                    image: "http://via.placeholder.com/75x75",
-                    onLiveRoomTap: () {},
+                    name: room.hostName,
+                    audience: room.audienceCount.toString(),
+                    image: "https://robohash.org/${room.hostId}.png?set=set4",
+                    onLiveRoomTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SoloSingView(
+                                  userID: ZEGOSDKManager().currentUser!.userID,
+                                  roomID: room.roomId!,
+                                  isHost: false,
+                                  song: room.song!,
+                                )),
+                      );
+                    },
                   );
                 },
               ),
             ),
-            SongCard(
-              image: "http://via.placeholder.com/75x75",
-              songName: 'King Shit',
-              singerName: 'Shubh',
-              onSongTap: () {},
+            ListView.builder(
+              itemCount: songs.length,
+              itemBuilder: (BuildContext context, int index) {
+                Song song = songs[index];
+                return SongCard(
+                  image: song.thumbnail_image_url,
+                  songName: song.name,
+                  singerName: 'Shubh',
+                  onSongTap: () async {
+                    String roomId = Random().nextInt(9999999).toString();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SoloSingView(
+                                userID: ZEGOSDKManager().currentUser!.userID,
+                                roomID: roomId,
+                                isHost: true,
+                                song: song,
+                              )),
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),

@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
+import 'package:flutter_lyric/lyrics_reader_model.dart';
 import 'package:star_maker/apis/room_api.dart';
 import 'package:star_maker/models/song_model.dart';
+import 'package:star_maker/utils/ui_lyrics.dart';
 import 'package:star_maker/utils/zegocloud_token.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/components/audio_room/seat_item_view.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/components/pop_up_manager.dart';
@@ -56,12 +58,13 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   String musicPath = "";
   String lyricsPath = "";
   int playProgress = 0;
-  var lyricUI = UINetease(
+  var lyricUI = UILyrics(
     defaultSize: 30,
     defaultExtSize: 20,
   );
   var playing = false;
-  var lyricModel = LyricsModelBuilder.create().bindLyricToMain('').getModel();
+
+  var lyricModel = LyricsModelBuilder.create().getModel();
   // ********** LYRICS ****************
 
   // ********** Music ****************
@@ -178,10 +181,19 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   }
 
   void sendSEIMessage(int millisecond) {
+    var half = lyricModel.lyrics.length / 2;
+    if (lyricModel.getCurrentLine(millisecond) > half) {
+      setState(() {
+        lyricUI = UILyrics(
+            defaultSize: 30, defaultExtSize: 20, highlightColor: Colors.blue);
+      });
+    }
+
     try {
       Map<String, dynamic> localMusicProcessStatusJsonObject = {
         'KEY_PROGRESS_IN_MS': millisecond,
       };
+
       String jsonData = jsonEncode(localMusicProcessStatusJsonObject);
       Uint8List data = utf8.encode(jsonData);
       ZegoExpressEngine.instance.sendSEI(
@@ -210,7 +222,6 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   }
 
   onRoomOnlineUserCountUpdate(String roomId, int count) async {
-    print('room Updatedddddddddddddddd');
     await roomApi.updateRoomCount(roomId, count);
   }
 
@@ -270,7 +281,6 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     if (widget.role == ZegoLiveAudioRoomRole.host) {
       roomApi.endRoom(widget.roomID);
     }
-    
 
     ZegoLiveAudioRoomManager().logoutRoom();
     for (final subscription in subscriptions) {
