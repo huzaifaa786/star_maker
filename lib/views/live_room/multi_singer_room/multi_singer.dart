@@ -910,8 +910,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   }
 
   void onExpressRoomStateChanged(ZegoRoomStateEvent event) {
-    debugPrint('AudioRoomPage:onExpressRoomStateChanged: $event');
-    debugPrint('EXPPPPPPPPPPPPPPPPPPPPPPPPPPPPP: $event');
+
     if (event.errorCode != 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
