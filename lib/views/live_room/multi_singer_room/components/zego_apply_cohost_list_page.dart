@@ -51,6 +51,7 @@ class RoomRequestListView {
                                         roomRequest.requestID ?? '')
                                     .then((value) {
                                   Navigator.pop(context);
+                                
                                 }).catchError((error) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(

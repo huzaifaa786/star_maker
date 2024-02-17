@@ -10,7 +10,7 @@ import '../../sdk/zim/Define/zim_room_request.dart';
 import 'live_audio_room_seat.dart';
 
 class RoomSeatService {
-  final seatCount = 8;
+  final seatCount = 2;
   int hostSeatIndex = 0;
   late List<ZegoLiveAudioRoomSeat> seatList =
       List.generate(seatCount, (index) => ZegoLiveAudioRoomSeat(index));
@@ -81,6 +81,7 @@ class RoomSeatService {
         .deleteRoomAttributes([seatIndex.toString()]);
     if (result != null) {
       if (result.errorKeys.contains(seatIndex.toString())) {
+        ZEGOSDKManager().zimService.speakerCount--;
         for (final element in seatList) {
           if (element.seatIndex == seatIndex) {
             element.currentUser.value = null;
@@ -143,6 +144,17 @@ class RoomSeatService {
 
   void onRoomAttributeUpdate(ZIMServiceRoomAttributeUpdateEvent event) {
     _onRoomAttributeUpdate(event.updateInfo);
+  }
+
+  int getSpeakerCount() {
+    int count = 0;
+    for (final element in seatList) {
+      print(element.lastUser.value);
+
+      if (element.currentUser.value != null) {}
+    }
+
+    return count;
   }
 
   void _onRoomAttributeUpdate(ZIMRoomAttributesUpdateInfo updateInfo) {

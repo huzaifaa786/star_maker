@@ -21,6 +21,7 @@ class ZIMService {
   ZIMService._internal();
   factory ZIMService() => instance;
   static final ZIMService instance = ZIMService._internal();
+  int speakerCount = 1;
 
   Map<String, String> roomAttributesMap = {};
   Map<String, String> userAvatarUrlMap = {};
@@ -36,6 +37,7 @@ class ZIMService {
     roomAttributesMap.clear();
     roomRequestMapNoti.clear();
     messageMapNoti.clear();
+    speakerCount = 1;
   }
 
   final connectionStateStreamCtrl =

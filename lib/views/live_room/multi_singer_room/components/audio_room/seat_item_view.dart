@@ -18,7 +18,7 @@ class ZegoSeatItemView extends StatelessWidget {
           ZegoLiveAudioRoomManager().seatList[seatIndex].currentUser,
       builder: (context, user, _) {
         if (user != null) {
-          return userSeatView(user);
+          return userSeatView(user, seatIndex);
         } else {
           return emptySeatView();
         }
@@ -26,12 +26,12 @@ class ZegoSeatItemView extends StatelessWidget {
     );
   }
 
-  Widget userSeatView(ZegoSDKUser userInfo) {
+  Widget userSeatView(ZegoSDKUser userInfo, int seatIndex) {
     return GestureDetector(
       onTap: onPressed,
       child: Column(
         children: [
-          userAvatar(userInfo),
+          userAvatar(userInfo, seatIndex),
           const SizedBox(height: 5),
           Text(
             userInfo.userName,
@@ -43,15 +43,20 @@ class ZegoSeatItemView extends StatelessWidget {
     );
   }
 
-  Widget userAvatar(ZegoSDKUser userInfo) {
+  Widget userAvatar(ZegoSDKUser userInfo, int seatIndex) {
     return SizedBox(
-      width: 60,
-      height: 60,
+      width: 80,
+      height: 80,
       child: ValueListenableBuilder<String?>(
         valueListenable: userInfo.avatarUrlNotifier,
         builder: (context, avatarUrl, child) {
-          return ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(30)),
+          return Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+                border: Border.all(
+                    color: seatIndex == 0 ? Colors.amber : Colors.blue,
+                    width: 3.0),
+                borderRadius: BorderRadius.circular(40)),
             child: (avatarUrl != null && avatarUrl.isNotEmpty)
                 ? CachedNetworkImage(
                     imageUrl: avatarUrl,
@@ -68,14 +73,14 @@ class ZegoSeatItemView extends StatelessWidget {
               color: Colors.grey, border: Border(bottom: BorderSide.none)),
           child: Center(
             child: SizedBox(
-              height: 20,
+              height: 24,
               child: Text(
                 userInfo.userID.substring(0, 1),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   decoration: TextDecoration.none,
                   color: Colors.black,
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),

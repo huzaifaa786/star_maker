@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:star_maker/views/splash/splash_view.dart';
 
 import 'package:zego_uikit/zego_uikit.dart';
+
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {

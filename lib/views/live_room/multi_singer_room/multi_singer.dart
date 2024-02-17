@@ -18,6 +18,7 @@ import 'package:star_maker/views/live_room/multi_singer_room/components/text_ico
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:star_maker/views/live_room/multi_singer_room/components/zego_apply_cohost_list_page.dart';
+import 'package:star_maker/views/live_room/multi_singer_room/internal/business/audioRoom/room_seat_service.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/internal/business/business_define.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/internal/live_audio_room_manager.dart';
 import 'package:star_maker/views/live_room/multi_singer_room/internal/sdk/express/express_service.dart';
@@ -51,6 +52,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   ValueNotifier<bool> isApplyStateNoti = ValueNotifier(false);
   ZegoInRoomMessageConfig? inRoomMessageConfig = ZegoInRoomMessageConfig();
   ZegoLiveAudioRoomSeatConfig? seatConfig = ZegoLiveAudioRoomSeatConfig();
+  RoomSeatService roomSeatService = RoomSeatService();
   final popUpManager = ZegoPopUpManager();
 
   // ********** LYRICS ****************
@@ -70,12 +72,12 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   // ********** Music ****************
   ZegoMediaPlayer? mediaPlayer;
   // ********** Music ****************
-
+  final zimService = ZEGOSDKManager().zimService;
+  final expressService = ZEGOSDKManager().expressService;
   @override
   void initState() {
     super.initState();
-    final zimService = ZEGOSDKManager().zimService;
-    final expressService = ZEGOSDKManager().expressService;
+
     subscriptions.addAll([
       expressService.roomStateChangedStreamCtrl.stream
           .listen(onExpressRoomStateChanged),
@@ -210,8 +212,16 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     try {
       Map<String, dynamic> jsonObject = jsonDecode(dataString);
       String KEY_PROGRESS_IN_MS = "KEY_PROGRESS_IN_MS";
+
       int progress = jsonObject[KEY_PROGRESS_IN_MS];
 
+      var half = lyricModel.lyrics.length / 2;
+      if (lyricModel.getCurrentLine(progress) > half) {
+        setState(() {
+          lyricUI = UILyrics(
+              defaultSize: 30, defaultExtSize: 20, highlightColor: Colors.blue);
+        });
+      }
       setState(() {
         playing = true;
         playProgress = progress;
@@ -223,6 +233,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
 
   onRoomOnlineUserCountUpdate(String roomId, int count) async {
     await roomApi.updateRoomCount(roomId, count);
+    setState(() {});
   }
 
   _eventListeners() async {
@@ -350,29 +361,46 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     );
   }
 
-  Container buildReaderWidget() {
-    return Container(
-      color: Colors.black26,
-      child: Stack(
-        children: [
-          LyricsReader(
-            padding: const EdgeInsets.symmetric(horizontal: 0),
-            model: lyricModel,
-            position: playProgress,
-            lyricUi: lyricUI,
-            playing: playing,
-            size: Size(MediaQuery.of(context).size.width,
-                MediaQuery.of(context).size.height * 0.3),
-            emptyBuilder: () => Center(
+  Widget buildReaderWidget() {
+    print(zimService.speakerCount);
+    if (zimService.speakerCount < 2 &&
+        widget.role == ZegoLiveAudioRoomRole.host) {
+      return Stack(children: [
+        Container(
+          margin: EdgeInsets.all(0),
+          height: MediaQuery.of(context).size.height * 0.2,
+          width: MediaQuery.of(context).size.width,
+          child: Center(
               child: Text(
-                "No lyrics",
-                style: lyricUI.getOtherMainTextStyle(),
+            'Waiting For other Singer To Join...',
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          )),
+        )
+      ]);
+    } else {
+      return Container(
+        color: Colors.black26,
+        child: Stack(
+          children: [
+            LyricsReader(
+              padding: const EdgeInsets.symmetric(horizontal: 0),
+              model: lyricModel,
+              position: playProgress,
+              lyricUi: lyricUI,
+              playing: playing,
+              size: Size(MediaQuery.of(context).size.width,
+                  MediaQuery.of(context).size.height * 0.3),
+              emptyBuilder: () => Center(
+                child: Text(
+                  "No lyrics",
+                  style: lyricUI.getOtherMainTextStyle(),
+                ),
               ),
-            ),
-          )
-        ],
-      ),
-    );
+            )
+          ],
+        ),
+      );
+    }
   }
 
   Widget message(ZegoInRoomMessage message) {
@@ -428,7 +456,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     );
   }
 
-  Stack buildMessagesWidget() {
+  Widget buildMessagesWidget() {
     return Stack(
       children: [
         Container(
@@ -505,7 +533,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
               children: [
                 // message(),
                 messageInput(),
-                musicButton(),
+                zimService.speakerCount > 1 ? musicButton() : Text(''),
                 // const SizedBox(width: 20),
                 lockSeatButton(),
                 // const SizedBox(width: 10),
@@ -737,6 +765,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
                 ZegoLiveAudioRoomManager().roleNoti.value =
                     ZegoLiveAudioRoomRole.audience;
                 isApplyStateNoti.value = false;
+
                 ZEGOSDKManager().expressService.stopPublishingStream();
               });
             }
@@ -770,7 +799,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
       child: GridView.count(
         physics: const NeverScrollableScrollPhysics(),
         mainAxisSpacing: 10,
-        crossAxisCount: 4,
+        crossAxisCount: 2,
         children: [
           ...List.generate(ZegoLiveAudioRoomManager().seatList.length,
               (seatIndex) {
@@ -883,6 +912,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   void onInComingRoomRequestTimeOut() {}
 
   void onOutgoingRoomRequestAccepted(OnOutgoingRoomRequestAcceptedEvent event) {
+    debugPrint("ROOOOOOOOOOOOOOOOOOOOOO:$event");
     isApplyStateNoti.value = false;
     for (final seat in ZegoLiveAudioRoomManager().seatList) {
       if (seat.currentUser.value == null) {
@@ -893,7 +923,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
                       .contains(ZEGOSDKManager().currentUser!.userID))) {
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('take seat failed: $result')));
-          }
+          } else {}
         }).catchError((error) {
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('take seat failed: $error')));
@@ -910,7 +940,8 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   }
 
   void onExpressRoomStateChanged(ZegoRoomStateEvent event) {
-
+    debugPrint('AudioRoomPage:onExpressRoomStateChanged: $event');
+    debugPrint('Expresssssssssssss: $event');
     if (event.errorCode != 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -929,7 +960,6 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   }
 
   void onZIMRoomStateChanged(ZIMServiceRoomStateChangedEvent event) {
-    debugPrint('AudioRoomPage:onZIMRoomStateChanged: $event');
     debugPrint('ZIMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM: $event');
     if ((event.event != ZIMRoomEvent.success) &&
         (event.state != ZIMRoomState.connected)) {

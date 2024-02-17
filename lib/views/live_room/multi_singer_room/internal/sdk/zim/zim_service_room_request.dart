@@ -1,14 +1,17 @@
 part of 'zim_service.dart';
 
 extension ZIMServiceRoomMessage on ZIMService {
-  Future<RoomRequestResult> sendRoomRequest(String receiverID, String extendedData) async {
-    final request = RoomRequest(RoomRequestAction.request, currentZimUserInfo!.userID, receiverID)
+  Future<RoomRequestResult> sendRoomRequest(
+      String receiverID, String extendedData) async {
+    final request = RoomRequest(
+        RoomRequestAction.request, currentZimUserInfo!.userID, receiverID)
       ..extendedData = extendedData;
 
     await ZIM
         .getInstance()!
         .sendMessage(
-          ZIMCommandMessage(message: Uint8List.fromList(utf8.encode(request.toJsonString()))),
+          ZIMCommandMessage(
+              message: Uint8List.fromList(utf8.encode(request.toJsonString()))),
           currentRoomID!,
           ZIMConversationType.room,
           ZIMMessageSendConfig(),
@@ -19,13 +22,16 @@ extension ZIMServiceRoomMessage on ZIMService {
       debugPrint('sendRoomRequest error');
     });
 
-    sendRoomRequestStreamCtrl.add(SendRoomRequestEvent(requestID: request.requestID ?? '', extendedData: extendedData));
+    sendRoomRequestStreamCtrl.add(SendRoomRequestEvent(
+        requestID: request.requestID ?? '', extendedData: extendedData));
     final result = RoomRequestResult(request.requestID ?? '');
     return result;
   }
 
-  Future<RoomRequestResult> acceptRoomRequest(String requestID, {String? extendedData}) async {
+  Future<RoomRequestResult> acceptRoomRequest(String requestID,
+      {String? extendedData}) async {
     final newRoomRequest = roomRequestMapNoti.value[requestID];
+
     if (newRoomRequest is RoomRequest) {
       newRoomRequest
         ..actionType = RoomRequestAction.accept
@@ -34,7 +40,9 @@ extension ZIMServiceRoomMessage on ZIMService {
         ..extendedData = extendedData ?? newRoomRequest.extendedData;
 
       await ZIM.getInstance()!.sendMessage(
-            ZIMCommandMessage(message: Uint8List.fromList(utf8.encode(newRoomRequest.toJsonString()))),
+            ZIMCommandMessage(
+                message: Uint8List.fromList(
+                    utf8.encode(newRoomRequest.toJsonString()))),
             currentRoomID!,
             ZIMConversationType.room,
             ZIMMessageSendConfig(),
@@ -43,14 +51,16 @@ extension ZIMServiceRoomMessage on ZIMService {
 
     roomRequestMapNoti.removeValue(requestID);
 
-    acceptIncomingRoomRequestStreamCtrl
-        .add(AcceptIncomingRoomRequestEvent(requestID: requestID, extendedData: extendedData));
+    acceptIncomingRoomRequestStreamCtrl.add(AcceptIncomingRoomRequestEvent(
+        requestID: requestID, extendedData: extendedData));
 
     final result = RoomRequestResult(requestID);
+    speakerCount++;
     return result;
   }
 
-  Future<RoomRequestResult> rejectRoomRequest(String requestID, {String? extendedData}) async {
+  Future<RoomRequestResult> rejectRoomRequest(String requestID,
+      {String? extendedData}) async {
     final newRoomRequest = roomRequestMapNoti.value[requestID];
     if (newRoomRequest is RoomRequest) {
       newRoomRequest
@@ -60,7 +70,9 @@ extension ZIMServiceRoomMessage on ZIMService {
         ..extendedData = extendedData ?? newRoomRequest.extendedData;
 
       await ZIM.getInstance()!.sendMessage(
-            ZIMCommandMessage(message: Uint8List.fromList(utf8.encode(newRoomRequest.toJsonString()))),
+            ZIMCommandMessage(
+                message: Uint8List.fromList(
+                    utf8.encode(newRoomRequest.toJsonString()))),
             currentRoomID!,
             ZIMConversationType.room,
             ZIMMessageSendConfig(),
@@ -69,14 +81,15 @@ extension ZIMServiceRoomMessage on ZIMService {
 
     roomRequestMapNoti.removeValue(requestID);
 
-    rejectIncomingRoomRequestStreamCtrl
-        .add(RejectIncomingRoomRequestEvent(requestID: requestID, extendedData: extendedData));
+    rejectIncomingRoomRequestStreamCtrl.add(RejectIncomingRoomRequestEvent(
+        requestID: requestID, extendedData: extendedData));
 
     final result = RoomRequestResult(requestID);
     return result;
   }
 
-  Future<RoomRequestResult> cancelRoomRequest(String requestID, {String? extendedData}) async {
+  Future<RoomRequestResult> cancelRoomRequest(String requestID,
+      {String? extendedData}) async {
     final newRoomRequest = roomRequestMapNoti.value[requestID];
     if (newRoomRequest is RoomRequest) {
       newRoomRequest
@@ -84,7 +97,9 @@ extension ZIMServiceRoomMessage on ZIMService {
         ..extendedData = extendedData ?? newRoomRequest.extendedData;
 
       await ZIM.getInstance()!.sendMessage(
-            ZIMCommandMessage(message: Uint8List.fromList(utf8.encode(newRoomRequest.toJsonString()))),
+            ZIMCommandMessage(
+                message: Uint8List.fromList(
+                    utf8.encode(newRoomRequest.toJsonString()))),
             currentRoomID!,
             ZIMConversationType.room,
             ZIMMessageSendConfig(),
@@ -93,7 +108,8 @@ extension ZIMServiceRoomMessage on ZIMService {
 
     roomRequestMapNoti.removeValue(requestID);
 
-    cancelRoomRequestStreamCtrl.add(CancelRoomRequestEvent(requestID: requestID, extendedData: extendedData));
+    cancelRoomRequestStreamCtrl.add(CancelRoomRequestEvent(
+        requestID: requestID, extendedData: extendedData));
 
     final result = RoomRequestResult(requestID);
     return result;
@@ -108,18 +124,21 @@ extension ZIMServiceRoomMessage on ZIMService {
     return result;
   }
 
-  void onReceiveRoomMessage(_, List<ZIMMessage> messageList, String fromRoomID) {
+  void onReceiveRoomMessage(
+      _, List<ZIMMessage> messageList, String fromRoomID) {
     for (final element in messageList) {
       if (element is ZIMCommandMessage) {
         final message = utf8.decode(element.message);
-        debugPrint('onReceiveRoomCustomCommand: $message');
+
         final Map<String, dynamic> messageMap = jsonDecode(message);
         final sender = messageMap['sender_id'] ?? '';
         final receiver = messageMap['receiver_id'] ?? '';
         final extendedData = messageMap['extended_data'] ?? '';
         final requestID = messageMap['request_id'] ?? '';
-        if (messageMap.keys.toList().contains('action_type') && currentZimUserInfo != null) {
-          final actionType = RoomRequestAction.values[messageMap['action_type']];
+        if (messageMap.keys.toList().contains('action_type') &&
+            currentZimUserInfo != null) {
+          final actionType =
+              RoomRequestAction.values[messageMap['action_type']];
           if (currentZimUserInfo!.userID == receiver) {
             switch (actionType) {
               case RoomRequestAction.request:
@@ -127,37 +146,42 @@ extension ZIMServiceRoomMessage on ZIMService {
                 request.extendedData = extendedData;
                 request.requestID = requestID;
                 roomRequestMapNoti.addValue(requestID, request);
-                onInComingRoomRequestStreamCtrl
-                    .add(OnInComingRoomRequestReceivedEvent(requestID: requestID, extendedData: extendedData));
+                onInComingRoomRequestStreamCtrl.add(
+                    OnInComingRoomRequestReceivedEvent(
+                        requestID: requestID, extendedData: extendedData));
                 break;
               case RoomRequestAction.accept:
                 final roomRequest = roomRequestMapNoti.value[requestID];
                 if (roomRequest != null) {
                   roomRequestMapNoti.removeValue(requestID);
-                  onOutgoingRoomRequestAcceptedStreamCtrl
-                      .add(OnOutgoingRoomRequestAcceptedEvent(requestID: requestID, extendedData: extendedData));
+                  onOutgoingRoomRequestAcceptedStreamCtrl.add(
+                      OnOutgoingRoomRequestAcceptedEvent(
+                          requestID: requestID, extendedData: extendedData));
                 }
                 break;
               case RoomRequestAction.reject:
                 final roomRequest = roomRequestMapNoti.value[requestID];
                 if (roomRequest != null) {
                   roomRequestMapNoti.removeValue(requestID);
-                  onOutgoingRoomRequestRejectedStreamCtrl
-                      .add(OnOutgoingRoomRequestRejectedEvent(requestID: requestID, extendedData: extendedData));
+                  onOutgoingRoomRequestRejectedStreamCtrl.add(
+                      OnOutgoingRoomRequestRejectedEvent(
+                          requestID: requestID, extendedData: extendedData));
                 }
                 break;
               case RoomRequestAction.cancel:
                 final roomRequest = roomRequestMapNoti.value[requestID];
                 if (roomRequest != null) {
                   roomRequestMapNoti.removeValue(requestID);
-                  onInComingRoomRequestCancelledStreamCtrl
-                      .add(OnInComingRoomRequestCancelledEvent(requestID: requestID, extendedData: extendedData));
+                  onInComingRoomRequestCancelledStreamCtrl.add(
+                      OnInComingRoomRequestCancelledEvent(
+                          requestID: requestID, extendedData: extendedData));
                 }
                 break;
             }
           }
         } else {
-          onRoomCommandReceivedEventStreamCtrl.add(OnRoomCommandReceivedEvent(sender, message));
+          onRoomCommandReceivedEventStreamCtrl
+              .add(OnRoomCommandReceivedEvent(sender, message));
         }
       } else if (element is ZIMTextMessage) {
         debugPrint('onReceiveRoomTextMessage: ${element.message}');
@@ -167,7 +191,8 @@ extension ZIMServiceRoomMessage on ZIMService {
 
   void onRoomMemberLeft(_, List<ZIMUserInfo> memberList, String roomID) {
     for (final member in memberList) {
-      roomRequestMapNoti.removeWhere((String k, RoomRequest v) => v.senderID == member.userID);
+      roomRequestMapNoti.removeWhere(
+          (String k, RoomRequest v) => v.senderID == member.userID);
     }
   }
 
