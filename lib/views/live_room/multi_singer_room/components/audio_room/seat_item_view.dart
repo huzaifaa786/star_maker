@@ -99,8 +99,8 @@ class ZegoSeatItemView extends StatelessWidget {
             onTap: isLock ? null : onPressed,
             child: Column(children: [
               SizedBox(
-                width: 60,
-                height: 60,
+                width: 80,
+                height: 80,
                 child: isLock
                     ? Image.asset('assets/icons/seat_lock_icon.png',
                         fit: BoxFit.fill)
