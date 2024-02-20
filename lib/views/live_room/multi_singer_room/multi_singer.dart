@@ -216,6 +216,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
       int progress = jsonObject[KEY_PROGRESS_IN_MS];
 
       var half = lyricModel.lyrics.length / 2;
+
       if (lyricModel.getCurrentLine(progress) > half) {
         setState(() {
           lyricUI = UILyrics(
@@ -362,45 +363,81 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   }
 
   Widget buildReaderWidget() {
-    print(zimService.speakerCount);
-    if (zimService.speakerCount < 2 &&
-        widget.role == ZegoLiveAudioRoomRole.host) {
-      return Stack(children: [
-        Container(
-          margin: EdgeInsets.all(0),
-          height: MediaQuery.of(context).size.height * 0.2,
-          width: MediaQuery.of(context).size.width,
-          child: Center(
+    // print(zimService.speakerCount);
+    // if (zimService.speakerCount < 2 &&
+    //     widget.role == ZegoLiveAudioRoomRole.host) {
+    //   return Stack(children: [
+    //     Container(
+    //       margin: EdgeInsets.all(0),
+    //       height: MediaQuery.of(context).size.height * 0.2,
+    //       width: MediaQuery.of(context).size.width,
+    //       child: Center(
+    //           child: Text(
+    //         'Waiting For other Singer To Join...',
+    //         style: TextStyle(color: Colors.white, fontSize: 20),
+    //       )),
+    //     )
+    //   ]);
+    // } else {
+    return Container(
+      color: Colors.black26,
+      child: Stack(
+        children: [
+          LyricsReader(
+            // speakerAvatar: Align(
+            //     alignment: Alignment.centerLeft,
+            //     child: MyAvatar(
+            //       url: 'https://robohash.org/1234.png?set=set4',
+            //       color: Colors.yellow,
+            //     )),
+            padding: EdgeInsets.only(left: 40),
+            model: lyricModel,
+            position: playProgress,
+            lyricUi: lyricUI,
+            playing: playing,
+            size: Size(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height * 0.3),
+            emptyBuilder: () => Center(
               child: Text(
-            'Waiting For other Singer To Join...',
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          )),
-        )
-      ]);
-    } else {
-      return Container(
-        color: Colors.black26,
-        child: Stack(
-          children: [
-            LyricsReader(
-              padding: const EdgeInsets.symmetric(horizontal: 0),
-              model: lyricModel,
-              position: playProgress,
-              lyricUi: lyricUI,
-              playing: playing,
-              size: Size(MediaQuery.of(context).size.width,
-                  MediaQuery.of(context).size.height * 0.3),
-              emptyBuilder: () => Center(
-                child: Text(
-                  "No lyrics",
-                  style: lyricUI.getOtherMainTextStyle(),
-                ),
+                "No lyrics",
+                style: lyricUI.getOtherMainTextStyle(),
               ),
-            )
-          ],
-        ),
-      );
-    }
+            ),
+            selectLineBuilder: (p0, p1) {
+              var half = lyricModel.lyrics.length / 2;
+
+              if (lyricModel.getCurrentLine(p0) > half) {
+                //speaker
+        
+                return ZegoLiveAudioRoomManager().seatList[1].currentUser.value != null
+                    ? Align(
+                        alignment: Alignment.centerLeft,
+                        child: MyAvatar(
+                          url: ZegoLiveAudioRoomManager().seatList[0].currentUser.value!
+                                  .avatarUrlNotifier.value ??
+                              '',
+                          color: Colors.blue,
+                        ))
+                    : Text('');
+              } else {
+                // host
+                return ZegoLiveAudioRoomManager().seatList[0].currentUser.value!= null
+                    ? Align(
+                        alignment: Alignment.centerLeft,
+                        child: MyAvatar(
+                          url: ZegoLiveAudioRoomManager().seatList[0].currentUser.value!
+                                  .avatarUrlNotifier.value ??
+                              '',
+                          color: Colors.yellow,
+                        ))
+                    : Text('');
+              }
+            },
+          )
+        ],
+      ),
+    );
+    // }
   }
 
   Widget message(ZegoInRoomMessage message) {
@@ -464,6 +501,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
           height: MediaQuery.of(context).size.height * 0.2,
           width: MediaQuery.of(context).size.width * 0.5,
           child: ListView.builder(
+              controller: ScrollController(),
               itemCount: messages.length,
               itemBuilder: ((context, index) {
                 return Column(
@@ -533,7 +571,8 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
               children: [
                 // message(),
                 messageInput(),
-                zimService.speakerCount > 1 ? musicButton() : Text(''),
+                // zimService.speakerCount > 1 ? musicButton() : Text(''),
+                musicButton(),
                 // const SizedBox(width: 20),
                 lockSeatButton(),
                 // const SizedBox(width: 10),
@@ -988,4 +1027,45 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
       Navigator.pop(context);
     }
   }
+}
+
+class MyAvatar extends StatelessWidget {
+  String? url;
+  Color? color;
+
+  MyAvatar({Key? key, this.url, this.color}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          border: Border.all(color: color!),
+          borderRadius: BorderRadius.circular(30)),
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Image.network(
+          url!,
+          height: 20,
+          width: 20,
+        ), // Replace 'assets/avatar.png' with the path to your avatar image
+      ),
+    );
+  }
+}
+
+class MyCustomClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    final radius = 30.0;
+    path.addOval(Rect.fromCenter(
+      width: 50,
+      height: 50,
+      center: Offset(size.width / 2, size.height / 2),
+    ));
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(MyCustomClipper oldClipper) => true;
 }
