@@ -66,6 +66,8 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   );
   var playing = false;
 
+  String currentSingerUrl = "";
+
   var lyricModel = LyricsModelBuilder.create().getModel();
   // ********** LYRICS ****************
 
@@ -186,8 +188,27 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
     var half = lyricModel.lyrics.length / 2;
     if (lyricModel.getCurrentLine(millisecond) > half) {
       setState(() {
+        if (ZegoLiveAudioRoomManager().seatList[1].currentUser.value != null) {
+          currentSingerUrl = ZegoLiveAudioRoomManager()
+              .seatList[1]
+              .currentUser
+              .value!
+              .avatarUrlNotifier
+              .value!;
+        }
         lyricUI = UILyrics(
             defaultSize: 30, defaultExtSize: 20, highlightColor: Colors.blue);
+      });
+    } else {
+      setState(() {
+        if (ZegoLiveAudioRoomManager().seatList[0].currentUser.value != null) {
+          currentSingerUrl = ZegoLiveAudioRoomManager()
+              .seatList[0]
+              .currentUser
+              .value!
+              .avatarUrlNotifier
+              .value!;
+        }
       });
     }
 
@@ -219,8 +240,30 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
 
       if (lyricModel.getCurrentLine(progress) > half) {
         setState(() {
+          if (ZegoLiveAudioRoomManager().seatList[1].currentUser.value !=
+              null) {
+            currentSingerUrl = ZegoLiveAudioRoomManager()
+                .seatList[1]
+                .currentUser
+                .value!
+                .avatarUrlNotifier
+                .value!;
+          }
+
           lyricUI = UILyrics(
               defaultSize: 30, defaultExtSize: 20, highlightColor: Colors.blue);
+        });
+      } else {
+        setState(() {
+          if (ZegoLiveAudioRoomManager().seatList[0].currentUser.value !=
+              null) {
+            currentSingerUrl = ZegoLiveAudioRoomManager()
+                .seatList[0]
+                .currentUser
+                .value!
+                .avatarUrlNotifier
+                .value!;
+          }
         });
       }
       setState(() {
@@ -363,81 +406,97 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   }
 
   Widget buildReaderWidget() {
-    // print(zimService.speakerCount);
-    // if (zimService.speakerCount < 2 &&
-    //     widget.role == ZegoLiveAudioRoomRole.host) {
-    //   return Stack(children: [
-    //     Container(
-    //       margin: EdgeInsets.all(0),
-    //       height: MediaQuery.of(context).size.height * 0.2,
-    //       width: MediaQuery.of(context).size.width,
-    //       child: Center(
-    //           child: Text(
-    //         'Waiting For other Singer To Join...',
-    //         style: TextStyle(color: Colors.white, fontSize: 20),
-    //       )),
-    //     )
-    //   ]);
-    // } else {
-    return Container(
-      color: Colors.black26,
-      child: Stack(
-        children: [
-          LyricsReader(
-            // speakerAvatar: Align(
-            //     alignment: Alignment.centerLeft,
-            //     child: MyAvatar(
-            //       url: 'https://robohash.org/1234.png?set=set4',
-            //       color: Colors.yellow,
-            //     )),
-            padding: EdgeInsets.only(left: 40),
-            model: lyricModel,
-            position: playProgress,
-            lyricUi: lyricUI,
-            playing: playing,
-            size: Size(MediaQuery.of(context).size.width,
-                MediaQuery.of(context).size.height * 0.3),
-            emptyBuilder: () => Center(
+    print(zimService.speakerCount);
+    if (zimService.speakerCount < 2 &&
+        widget.role == ZegoLiveAudioRoomRole.host) {
+      return Stack(children: [
+        Container(
+          margin: EdgeInsets.all(0),
+          height: MediaQuery.of(context).size.height * 0.2,
+          width: MediaQuery.of(context).size.width,
+          child: Center(
               child: Text(
-                "No lyrics",
-                style: lyricUI.getOtherMainTextStyle(),
+            'Waiting For other Singer To Join...',
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          )),
+        )
+      ]);
+    } else {
+      return Container(
+        color: Colors.black26,
+        child: Stack(
+          children: [
+            LyricsReader(
+              speakerAvatar: Align(
+                  alignment: Alignment.centerLeft,
+                  child: MyAvatar(
+                    url: currentSingerUrl,
+                    color: Colors.yellow,
+                  )),
+              padding: EdgeInsets.only(left: 40),
+              model: lyricModel,
+              position: playProgress,
+              lyricUi: lyricUI,
+              playing: playing,
+              size: Size(MediaQuery.of(context).size.width,
+                  MediaQuery.of(context).size.height * 0.3),
+              emptyBuilder: () => Center(
+                child: Text(
+                  "No lyrics",
+                  style: lyricUI.getOtherMainTextStyle(),
+                ),
               ),
-            ),
-            selectLineBuilder: (p0, p1) {
-              var half = lyricModel.lyrics.length / 2;
+              selectLineBuilder: (p0, p1) {
+                var half = lyricModel.lyrics.length / 2;
 
-              if (lyricModel.getCurrentLine(p0) > half) {
-                //speaker
-        
-                return ZegoLiveAudioRoomManager().seatList[1].currentUser.value != null
-                    ? Align(
-                        alignment: Alignment.centerLeft,
-                        child: MyAvatar(
-                          url: ZegoLiveAudioRoomManager().seatList[0].currentUser.value!
-                                  .avatarUrlNotifier.value ??
-                              '',
-                          color: Colors.blue,
-                        ))
-                    : Text('');
-              } else {
-                // host
-                return ZegoLiveAudioRoomManager().seatList[0].currentUser.value!= null
-                    ? Align(
-                        alignment: Alignment.centerLeft,
-                        child: MyAvatar(
-                          url: ZegoLiveAudioRoomManager().seatList[0].currentUser.value!
-                                  .avatarUrlNotifier.value ??
-                              '',
-                          color: Colors.yellow,
-                        ))
-                    : Text('');
-              }
-            },
-          )
-        ],
-      ),
-    );
-    // }
+                if (lyricModel.getCurrentLine(p0) > half) {
+                  //speaker
+
+                  return ZegoLiveAudioRoomManager()
+                              .seatList[1]
+                              .currentUser
+                              .value !=
+                          null
+                      ? Align(
+                          alignment: Alignment.centerLeft,
+                          child: MyAvatar(
+                            url: ZegoLiveAudioRoomManager()
+                                    .seatList[1]
+                                    .currentUser
+                                    .value!
+                                    .avatarUrlNotifier
+                                    .value ??
+                                '',
+                            color: Colors.blue,
+                          ))
+                      : Text('');
+                } else {
+                  // host
+                  return ZegoLiveAudioRoomManager()
+                              .seatList[0]
+                              .currentUser
+                              .value !=
+                          null
+                      ? Align(
+                          alignment: Alignment.centerLeft,
+                          child: MyAvatar(
+                            url: ZegoLiveAudioRoomManager()
+                                    .seatList[0]
+                                    .currentUser
+                                    .value!
+                                    .avatarUrlNotifier
+                                    .value ??
+                                '',
+                            color: Colors.yellow,
+                          ))
+                      : Text('');
+                }
+              },
+            )
+          ],
+        ),
+      );
+    }
   }
 
   Widget message(ZegoInRoomMessage message) {
@@ -571,8 +630,8 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
               children: [
                 // message(),
                 messageInput(),
-                // zimService.speakerCount > 1 ? musicButton() : Text(''),
-                musicButton(),
+                zimService.speakerCount > 1 ? musicButton() : Text(''),
+                // musicButton(),
                 // const SizedBox(width: 20),
                 lockSeatButton(),
                 // const SizedBox(width: 10),
