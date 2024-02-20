@@ -195,6 +195,18 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
               .value!
               .avatarUrlNotifier
               .value!;
+          ZegoLiveAudioRoomManager()
+              .seatList[1]
+              .currentUser
+              .value!
+              .isMicOnNotifier
+              .value = true;
+          ZegoLiveAudioRoomManager()
+              .seatList[0]
+              .currentUser
+              .value!
+              .isMicOnNotifier
+              .value = false;
         }
         lyricUI = UILyrics(
             defaultSize: 30, defaultExtSize: 20, highlightColor: Colors.blue);
@@ -208,6 +220,18 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
               .value!
               .avatarUrlNotifier
               .value!;
+          ZegoLiveAudioRoomManager()
+              .seatList[1]
+              .currentUser
+              .value!
+              .isMicOnNotifier
+              .value = false;
+          ZegoLiveAudioRoomManager()
+              .seatList[0]
+              .currentUser
+              .value!
+              .isMicOnNotifier
+              .value = true;
         }
       });
     }
@@ -248,6 +272,18 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
                 .value!
                 .avatarUrlNotifier
                 .value!;
+            ZegoLiveAudioRoomManager()
+                .seatList[1]
+                .currentUser
+                .value!
+                .isMicOnNotifier
+                .value = true;
+            ZegoLiveAudioRoomManager()
+                .seatList[0]
+                .currentUser
+                .value!
+                .isMicOnNotifier
+                .value = false;
           }
 
           lyricUI = UILyrics(
@@ -263,6 +299,18 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
                 .value!
                 .avatarUrlNotifier
                 .value!;
+            ZegoLiveAudioRoomManager()
+                .seatList[1]
+                .currentUser
+                .value!
+                .isMicOnNotifier
+                .value = false;
+            ZegoLiveAudioRoomManager()
+                .seatList[0]
+                .currentUser
+                .value!
+                .isMicOnNotifier
+                .value = true;
           }
         });
       }
@@ -427,12 +475,14 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
         child: Stack(
           children: [
             LyricsReader(
-              speakerAvatar: Align(
-                  alignment: Alignment.centerLeft,
-                  child: MyAvatar(
-                    url: currentSingerUrl,
-                    color: Colors.yellow,
-                  )),
+              speakerAvatar: currentSingerUrl != ''
+                  ? Align(
+                      alignment: Alignment.centerLeft,
+                      child: MyAvatar(
+                        url: currentSingerUrl,
+                        color: Colors.yellow,
+                      ))
+                  : null,
               padding: EdgeInsets.only(left: 40),
               model: lyricModel,
               position: playProgress,
