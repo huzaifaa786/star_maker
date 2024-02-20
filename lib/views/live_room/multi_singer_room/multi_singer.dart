@@ -67,6 +67,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
   var playing = false;
 
   String currentSingerUrl = "";
+  Color bordercolor = Colors.yellow;
 
   var lyricModel = LyricsModelBuilder.create().getModel();
   // ********** LYRICS ****************
@@ -207,6 +208,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
               .value!
               .isMicOnNotifier
               .value = false;
+          bordercolor = Colors.blue;
         }
         lyricUI = UILyrics(
             defaultSize: 30, defaultExtSize: 20, highlightColor: Colors.blue);
@@ -232,6 +234,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
               .value!
               .isMicOnNotifier
               .value = true;
+               bordercolor = Colors.yellow;
         }
       });
     }
@@ -284,6 +287,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
                 .value!
                 .isMicOnNotifier
                 .value = false;
+                 bordercolor = Colors.blue;
           }
 
           lyricUI = UILyrics(
@@ -311,6 +315,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
                 .value!
                 .isMicOnNotifier
                 .value = true;
+                 bordercolor = Colors.yellow;
           }
         });
       }
@@ -480,7 +485,7 @@ class _MultiSingersKaraokeState extends State<MultiSingersKaraoke> {
                       alignment: Alignment.centerLeft,
                       child: MyAvatar(
                         url: currentSingerUrl,
-                        color: Colors.yellow,
+                        color: bordercolor,
                       ))
                   : null,
               padding: EdgeInsets.only(left: 40),
