@@ -21,7 +21,7 @@ class _SplashViewState extends State<SplashView> {
   Future checkFirstSeen() async {
     // bool firstCall = await IsFirstRun.isFirstCall();
     // if (firstCall) {
-    AppRoutes.navigateToHomeView(context);
+    AppRoutes.navigateToLoginView(context);
     // } else {
     // final User? user = FirebaseAuth.instance.currentUser;
 
