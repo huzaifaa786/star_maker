@@ -40,7 +40,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                   )
                 ],
               ),
-              Gap(150),
+              Gap(170),
               googlelogincard(
                 icon: 'assets/images/Apple Logo.png',
                 title: 'Sign in with Apple Id',
@@ -48,26 +48,30 @@ class _OnBoardingViewState extends State<OnBoardingView> {
               ),
               Gap(20),
               googlelogincard(
-                icon: 'assets/images/Apple Logo.png',
+                icon: 'assets/images/Google.png',
                 title: 'Sign in with Apple Id',
                 ontap: () {},
               ),
               Gap(20),
               googlelogincard(
-                icon: 'assets/images/Apple Logo.png',
+                icon: 'assets/images/Customer.png',
                 title: 'Sign in with Apple Id',
                 ontap: () {},
               ),
-              Gap(10),
+              Gap(50),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Already have an account Log In',
                     style: TextStyle(
-                        color: white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,decoration: TextDecoration.underline,),
+                      color: white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      decoration: TextDecoration.underline,
+                      decorationColor: white,
+                      decorationThickness: 3,
+                    ),
                   )
                 ],
               )
