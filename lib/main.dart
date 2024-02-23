@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:star_maker/views/auth/signup_view.dart';
 import 'package:star_maker/views/onboarding/onboarding.dart';
 
 import 'package:star_maker/views/splash/splash_view.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const OnBoardingView(),
+      home: const SignupView(),
     );
   }
 }
