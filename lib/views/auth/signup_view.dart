@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:star_maker/utils/colors.dart';
 import 'package:gap/gap.dart';
+import 'package:star_maker/views/karaoke/component/gradient_text.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
@@ -43,19 +45,25 @@ class _SignupViewState extends State<SignupView> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Add Profile Picture',style: TextStyle(color: blueAccent,fontSize: 15,fontWeight:FontWeight.w400),),
+                            GradientTextStatic('Add Profile Picture',
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w400),
+                                colors: [Colors.purpleAccent, Colors.blue]),
                           ],
                         ),
+                        
                       ],
                     ),
                   ),
                   Positioned(
-                    top: -50,
+                    // bottom: 470,
+                    top: -20,
                     left: 0,
                     right: 0,
                     child: Center(
                       child: Image.asset(
-                        'assets/images/user.png',
+                        'assets/images/User.png',
+                        scale: 1.0,
                         fit: BoxFit.contain,
                       ),
                     ),
