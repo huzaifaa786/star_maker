@@ -181,7 +181,7 @@ class _MainScreenState extends State<MainScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            'assets/images/User.png',
+                            'assets/images/user.png',
                             fit: BoxFit.scaleDown,
                             height: 38,
                             width: 38,
