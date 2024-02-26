@@ -49,7 +49,7 @@ class _CategoriesViewState extends State<CategoriesView> {
               ),
               Gap(10),
               Container(
-                height: MediaQuery.of(context).size.height * 0.77,
+                height: MediaQuery.of(context).size.height * 0.7,
                 decoration: BoxDecoration(
                     // border: Border.all(),
                     ),
@@ -60,18 +60,38 @@ class _CategoriesViewState extends State<CategoriesView> {
                       childAspectRatio: 179 / 195,
                       crossAxisSpacing: 12.0,
                     ),
-                    itemCount: 9,
+                    itemCount: 5,
                     itemBuilder: (context, index) {
+                      List<Map<String, dynamic>> categories = [
+                        {
+                          'name': 'Popular Now',
+                          'pic': 'assets/images/categoryimg.png',
+                        },
+                        {
+                          'name': 'Arabic',
+                          'pic': 'assets/images/arabic_category.png',
+                        },
+                        {
+                          'name': 'English',
+                          'pic': 'assets/images/english_category.png',
+                        },
+                        {
+                          'name': 'Hindi',
+                          'pic': 'assets/images/hindi_category.png',
+                        },
+                        {
+                          'name': 'Islamic',
+                          'pic': 'assets/images/islamic_category.png',
+                        },
+                        
+                      ];
+
+                      Map<String, dynamic> category = categories[index];
                       return CategoryContainer(
-                        name: 'Popular Now',
-                        pic: 'assets/images/categoryimg.png',
+                        name: category['name'],
+                        pic: category['pic'],
                         ontap: () {
-                           AppRoutes.navigateTocategorydetailView(context);
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) => CategoryDetailView()),
-                          // );
+                          AppRoutes.navigateTocategorydetailView(context);
                         },
                       );
                     }),

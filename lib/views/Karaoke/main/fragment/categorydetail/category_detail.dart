@@ -31,8 +31,7 @@ class _CategoryDetailViewState extends State<CategoryDetailView> {
                     GradientTextStatic('English Songs',
                         style: TextStyle(
                             fontSize: 30, fontWeight: FontWeight.w800),
-                        colors: [Colors.purpleAccent, Colors.blue],),
-                        
+                        colors: [Colors.purpleAccent, Colors.blue]),
                     Image.asset('assets/images/Search.png'),
                   ],
                 ),
