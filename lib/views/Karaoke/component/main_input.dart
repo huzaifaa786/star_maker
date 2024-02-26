@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:gradient_borders/gradient_borders.dart';
+import 'package:star_maker/utils/colors.dart';
 
 class InputField extends StatelessWidget {
   const InputField({
@@ -31,8 +32,30 @@ class InputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.only(top: 15, left: 0, right: 0),
+        padding: const EdgeInsets.only(top: 15, left: 0, right: 0,),
+        // decoration: BoxDecoration(
+        //   boxShadow: [
+        //     BoxShadow(
+        //       color: Colors.grey.withOpacity(0.5), // Shadow color
+        //       spreadRadius: 2,
+        //       blurRadius: 10,
+        //       offset: Offset(0, 1), // changes position of shadow
+        //     ),
+        //   ],
+        // ),
         
+        decoration: BoxDecoration(
+              //  color: Colors.white,
+              
+                borderRadius: BorderRadius.circular(30.0),
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(0,13),
+                    blurRadius:0.3,
+                    color: Colors.black.withOpacity(0.1),
+                  ),
+                ],
+              ),
         child: TextFormField(
             readOnly: readOnly,
             maxLines: maxlines,
@@ -48,13 +71,12 @@ class InputField extends StatelessWidget {
             style: TextStyle(color: Colors.black),
             keyboardType: type,
             decoration: InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric( horizontal: 30),
+                contentPadding: EdgeInsets.symmetric(horizontal: 30),
                 // contentPadding: EdgeInsets.zero,
-                
+
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                
-                fillColor: Colors.white,
+                fillColor: fullWhiteColor,
+                filled: true,
                 border: GradientOutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   gradient: const LinearGradient(
@@ -68,22 +90,16 @@ class InputField extends StatelessWidget {
                 labelText: lable,
                 //hintText: hint,
                 labelStyle: TextStyle(
-                  
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     foreground: Paint()
-                    
                       ..shader = LinearGradient(
-                        
                               begin: Alignment.topLeft,
                               end: Alignment.bottomLeft,
                               colors: [Colors.purpleAccent, Colors.blue])
-                              
-                          .createShader(Rect.fromLTWH(0, 0, 200, 20),
-                          
-                          ))
-                          
-                          )));
+                          .createShader(
+                        Rect.fromLTWH(0, 0, 200, 20),
+                      )))));
   }
 }
