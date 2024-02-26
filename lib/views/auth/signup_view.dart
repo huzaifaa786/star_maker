@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:star_maker/utils/colors.dart';
@@ -18,28 +20,33 @@ class _SignupViewState extends State<SignupView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-          child: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.purple, Colors.blueAccent],
-          )),
-          child: Column(
-            children: [
-              Gap(80),
-              Stack(
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(left: 15,right: 15),
+        body: SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.purple, Colors.blueAccent],
+                  )),
+                ),
+                
+                Center(
+                  
+                  child: Container(
+                    padding: EdgeInsets.only(left: 15, right: 15,),
+                   // padding: EdgeInsets.symmetric(horizontal: 15,),
                     height: MediaQuery.of(context).size.height * 0.80,
                     width: MediaQuery.of(context).size.width * 0.90,
                     decoration: BoxDecoration(
-                        color: white,
+                        color: ofWhiteColor,
                         // border:
                         //     Border.all(width: 1, color: lightGreenColor.withOpacity(0.3)),
                         borderRadius: BorderRadius.all(Radius.circular(50))),
@@ -56,39 +63,42 @@ class _SignupViewState extends State<SignupView> {
                           ],
                         ),
                         Gap(10),
-                       InputField(lable: 'Username',),
-                       Gap(5),
-                       InputField(lable: 'Email Address',),
-                       Gap(5),
-                       InputField(lable: 'Birthdate',),
-                       Gap(5),
-                       InputField(lable: 'Gender',),
-                       Gap(5),
-                       InputField(lable: 'Password',obscure: true,),
-                       Gap(30),
-                       CustomeButton(title: 'Create Account', onPressed: (){}),
+                        InputField(
+                          lable: 'Username',
+                        ),
+                        Gap(5),
+                        InputField(
+                          lable: 'Email Address',
+                        ),
+                        Gap(5),
+                        InputField(
+                          lable: 'Birthdate',
+                        ),
+                        Gap(5),
+                        InputField(
+                          lable: 'Gender',
+                        ),
+                        Gap(5),
+                        InputField(
+                          lable: 'Password',
+                          obscure: true,
+                        ),
+                        Gap(30),
+                        CustomeButton(
+                            title: 'Create Account', onPressed: () {}),
                       ],
                     ),
                   ),
-                  Positioned(
-                    // bottom: 470,
-                    top: -40,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: Image.asset(
-                        'assets/images/User.png',height: 70,width: 70,
-                        scale: 1.0,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+                Positioned(
+                    child: CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/User.png'),
+                )),
+              ],
+            ),
+          ],
         ),
-      )),
-    );
+      ),
+    ));
   }
 }
