@@ -8,6 +8,7 @@ import 'package:star_maker/routes/routes.dart';
 import 'package:star_maker/utils/colors.dart';
 import 'package:star_maker/views/karaoke/component/category_container.dart';
 import 'package:star_maker/views/karaoke/component/gradient_text.dart';
+import 'package:star_maker/views/karaoke/main/fragment/categorydetail/category_detail.dart';
 
 class CategoriesView extends StatefulWidget {
   const CategoriesView({super.key});
@@ -48,7 +49,7 @@ class _CategoriesViewState extends State<CategoriesView> {
               ),
               Gap(10),
               Container(
-                height: MediaQuery.of(context).size.height * 0.77,
+                height: MediaQuery.of(context).size.height * 0.7,
                 decoration: BoxDecoration(
                     // border: Border.all(),
                     ),
@@ -59,11 +60,40 @@ class _CategoriesViewState extends State<CategoriesView> {
                       childAspectRatio: 179 / 195,
                       crossAxisSpacing: 12.0,
                     ),
-                    itemCount: 9,
+                    itemCount: 5,
                     itemBuilder: (context, index) {
-                      return CategoryContainer(name: 'Popular Now',pic: 'assets/images/categoryimg.png',ontap: (){
-                         AppRoutes.navigateTocategorydetailView(context);
-                      },);
+                      List<Map<String, dynamic>> categories = [
+                        {
+                          'name': 'Popular Now',
+                          'pic': 'assets/images/categoryimg.png',
+                        },
+                        {
+                          'name': 'Arabic',
+                          'pic': 'assets/images/arabic_category.png',
+                        },
+                        {
+                          'name': 'English',
+                          'pic': 'assets/images/english_category.png',
+                        },
+                        {
+                          'name': 'Hindi',
+                          'pic': 'assets/images/hindi_category.png',
+                        },
+                        {
+                          'name': 'Islamic',
+                          'pic': 'assets/images/islamic_category.png',
+                        },
+                        
+                      ];
+
+                      Map<String, dynamic> category = categories[index];
+                      return CategoryContainer(
+                        name: category['name'],
+                        pic: category['pic'],
+                        ontap: () {
+                          AppRoutes.navigateTocategorydetailView(context);
+                        },
+                      );
                     }),
               )
             ],

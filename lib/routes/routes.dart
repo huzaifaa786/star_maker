@@ -3,6 +3,7 @@ import 'package:star_maker/views/auth/login_view.dart';
 import 'package:star_maker/views/home/home_view.dart';
 import 'package:star_maker/views/karaoke/main/fragment/categorydetail/category_detail.dart';
 import 'package:star_maker/views/karaoke/main/mainscreen.dart';
+import 'package:star_maker/views/karaoke/singing/signing.dart';
 import 'package:star_maker/views/live_room/live_room_view.dart';
 import 'package:star_maker/views/solo_singing/solo_singing_view.dart';
 
@@ -46,6 +47,13 @@ class AppRoutes {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const CategoryDetailView()),
+    );
+    
+  }
+  static void navigateTosigningView(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SigningView()),
     );
     
   }

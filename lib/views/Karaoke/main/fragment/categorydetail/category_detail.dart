@@ -1,7 +1,9 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:star_maker/routes/routes.dart';
+import 'package:star_maker/views/karaoke/component/category_detail_container.dart';
 import 'package:star_maker/views/karaoke/component/gradient_text.dart';
 
 class CategoryDetailView extends StatefulWidget {
@@ -42,6 +44,23 @@ class _CategoryDetailViewState extends State<CategoryDetailView> {
                 ),
               ),
               Gap(10),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.9,
+                child: ListView.builder(
+                  itemCount: 17,
+                  itemBuilder: (BuildContext context, int index) {
+                    return CategoryDetailContainer(
+                      headingname: 'Black Pink',
+                      subheading: 'By Nicki Minaj',
+                      ontap: () {
+                           AppRoutes.navigateTosigningView(context);
+
+                      },
+                      img: 'assets/images/categoryimg2.png',
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
