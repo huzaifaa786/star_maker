@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:star_maker/utils/colors.dart';
-import 'package:star_maker/views/Karaoke/component/common_button.dart';
 import 'package:star_maker/views/karaoke/component/gradient_text.dart';
 
 class ProfileView extends StatefulWidget {
@@ -76,17 +75,46 @@ class _ProfileViewState extends State<ProfileView> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Card(
-                                      shape: RoundedRectangleBorder(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      side: BorderSide(
+                                        width: 2,
+                                        color: lightblueAccent,
+                                      ),
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
-                                        side: BorderSide(
-                                          width: 2,
-                                          color: lightblueAccent,
+                                        gradient: LinearGradient(
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight,
+                                          colors: [
+                                            Color(0xFFEFD2F4),
+                                            Color(0xFFCCE4F7),
+                                          ],
                                         ),
                                       ),
-                                      child: CommonButton(
-                                        picture: 'assets/images/Customer.png',
-                                        name: 'Edit Profile',
-                                      )),
+                                      child: Row(
+                                        children: [
+                                          Gap(25),
+                                          Image.asset(
+                                              'assets/images/Customer.png'),
+                                          Gap(10),
+                                          GradientTextStatic(
+                                            'Edit Profile',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w800),
+                                            colors: [
+                                              Colors.purpleAccent,
+                                              Colors.blue,
+                                            ],
+                                          ),
+                                          Gap(25),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                               Gap(40),
