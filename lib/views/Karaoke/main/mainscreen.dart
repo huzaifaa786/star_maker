@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:star_maker/utils/colors.dart';
+import 'package:star_maker/views/Karaoke/Room/roomlist_view.dart';
 import 'package:star_maker/views/auth/login_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,10 +24,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     var _fragments = [
-       CategoriesView(),
+      CategoriesView(),
+      RoomListView(),
       LoginView(),
-       LoginView(),
-       LoginView(),
+      LoginView(),
     ];
     return Scaffold(
       body: SafeArea(
@@ -95,27 +96,27 @@ class _MainScreenState extends State<MainScreen> {
                   color: white,
                   child: Center(
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/images/SpeechBubble.png',
-                            fit: BoxFit.scaleDown,
-                            height: 38,
-                            width: 38,
-                          ),
-                          Gap(3),
-                          _navigationMenuIndex == 1
-                              ? Container(
-                                  height: 6,
-                                  width: 6,
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                )
-                              : Container()
-                        ],
-                      ),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/SpeechBubble.png',
+                          fit: BoxFit.scaleDown,
+                          height: 38,
+                          width: 38,
+                        ),
+                        Gap(3),
+                        _navigationMenuIndex == 1
+                            ? Container(
+                                height: 6,
+                                width: 6,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              )
+                            : Container()
+                      ],
+                    ),
                   ),
                 ),
               ),
