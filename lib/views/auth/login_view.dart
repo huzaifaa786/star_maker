@@ -15,18 +15,17 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       body: SafeArea(
           child: SingleChildScrollView(
-        child: Container(height: MediaQuery.of(context).size.height,
-        width:  MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-        gradient: LinearGradient(  begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-        colors: [Colors.purple, Colors.blueAccent],
-        )
-        ),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [Color(0xFFD657EC), Color(0xFF4F84DF)],
+          )),
           child: Column(
-            children: [
-              Text('hello')
-            ],
+            children: [Text('hello')],
           ),
         ),
       )),
