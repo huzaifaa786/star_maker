@@ -8,6 +8,7 @@ import 'package:star_maker/routes/routes.dart';
 import 'package:star_maker/utils/colors.dart';
 import 'package:star_maker/views/karaoke/component/category_container.dart';
 import 'package:star_maker/views/karaoke/component/gradient_text.dart';
+import 'package:star_maker/views/karaoke/main/fragment/categorydetail/category_detail.dart';
 
 class CategoriesView extends StatefulWidget {
   const CategoriesView({super.key});
@@ -61,9 +62,18 @@ class _CategoriesViewState extends State<CategoriesView> {
                     ),
                     itemCount: 9,
                     itemBuilder: (context, index) {
-                      return CategoryContainer(name: 'Popular Now',pic: 'assets/images/categoryimg.png',ontap: (){
-                         AppRoutes.navigateTocategorydetailView(context);
-                      },);
+                      return CategoryContainer(
+                        name: 'Popular Now',
+                        pic: 'assets/images/categoryimg.png',
+                        ontap: () {
+                           AppRoutes.navigateTocategorydetailView(context);
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => CategoryDetailView()),
+                          // );
+                        },
+                      );
                     }),
               )
             ],
