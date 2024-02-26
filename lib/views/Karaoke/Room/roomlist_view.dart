@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:star_maker/views/Karaoke/component/common_button.dart';
+import 'package:star_maker/views/Karaoke/component/room_list.dart';
 import 'package:star_maker/views/karaoke/component/gradient_text.dart';
 
 class RoomListView extends StatefulWidget {
@@ -48,7 +50,16 @@ class _RoomListViewState extends State<RoomListView> {
               ),
               //button row
               Row(
-                children: [],
+                children: [
+                  // CommonButton(
+                  //   picture: 'assets/images/Plus.png',
+                  //   name: 'Create a room',
+                  // ),
+                  // CommonButton(
+                  //   picture: 'assets/images/Plus.png',
+                  //   name: 'Create a room',
+                  // )
+                ],
               ),
               //2nd divider
               Padding(
@@ -59,10 +70,39 @@ class _RoomListViewState extends State<RoomListView> {
                 ),
               ),
               //2nd heading
-              Text(
+              Gap(5),
+              GradientTextStatic(
                 'Public Rooms',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800),
-              )
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                colors: [Colors.purpleAccent, Colors.blue],
+              ),
+              //3rd divider
+              Gap(5),
+              Padding(
+                padding: const EdgeInsets.only(left: 5, right: 5),
+                child: Divider(
+                  thickness: 1,
+                  color: Color.fromARGB(255, 81, 100, 209),
+                ),
+              ),
+              Gap(5),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.9,
+                child: ListView.builder(
+                  itemCount: 15,
+                  itemBuilder: (BuildContext context, int index) {
+                    return RoomListContainer(
+                      headingname: 'Black Pink',
+                      subheading: 'By Nicki Minaj',
+                      ontap: () {},
+                      backimg: 'assets/images/Ellipse1.png',
+                      imgfirst: 'assets/images/Ellipse 2.png',
+                      imgsecond: 'assets/images/Ellipse 3.png',
+                      imgthird: 'assets/images/Ellipse4.png',
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
