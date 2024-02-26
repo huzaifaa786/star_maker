@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:star_maker/views/Karaoke/edit_profile/edit_profile.dart';
 import 'package:star_maker/views/Karaoke/profile/profile_view.dart';
 import 'package:star_maker/views/auth/signup_view.dart';
-import 'package:star_maker/views/karaoke/main/mainscreen.dart';
 import 'package:star_maker/views/onboarding/onboarding.dart';
 
 import 'package:star_maker/views/splash/splash_view.dart';
@@ -35,7 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const ProfileView(),
+      home: const EditProfileView(),
     );
   }
 }

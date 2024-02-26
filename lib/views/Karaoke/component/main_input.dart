@@ -32,7 +32,11 @@ class InputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.only(top: 15, left: 0, right: 0,),
+        padding: const EdgeInsets.only(
+          top: 15,
+          left: 0,
+          right: 0,
+        ),
         // decoration: BoxDecoration(
         //   boxShadow: [
         //     BoxShadow(
@@ -43,19 +47,19 @@ class InputField extends StatelessWidget {
         //     ),
         //   ],
         // ),
-        
+
         decoration: BoxDecoration(
-              //  color: Colors.white,
-              
-                borderRadius: BorderRadius.circular(30.0),
-                boxShadow: [
-                  BoxShadow(
-                    offset: Offset(0,13),
-                    blurRadius:0.3,
-                    color: Colors.black.withOpacity(0.1),
-                  ),
-                ],
-              ),
+          //  color: Colors.white,
+
+          borderRadius: BorderRadius.circular(30.0),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, 13),
+              blurRadius: 0.3,
+              color: Colors.black.withOpacity(0.1),
+            ),
+          ],
+        ),
         child: TextFormField(
             readOnly: readOnly,
             maxLines: maxlines,
