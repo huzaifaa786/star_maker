@@ -5,14 +5,14 @@ import 'package:gap/gap.dart';
 import 'package:star_maker/utils/colors.dart';
 import 'package:star_maker/views/karaoke/component/gradient_text.dart';
 
-class ProfileView extends StatefulWidget {
-  const ProfileView({super.key});
+class EditProfileView extends StatefulWidget {
+  const EditProfileView({super.key});
 
   @override
-  State<ProfileView> createState() => _ProfileViewState();
+  State<EditProfileView> createState() => _EditProfileViewState();
 }
 
-class _ProfileViewState extends State<ProfileView> {
+class _EditProfileViewState extends State<EditProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,14 +59,14 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                     child: Column(
                       children: [
-                        Gap(70),
+                        Gap(50),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             GradientTextStatic(
-                              '@ Moyeldinn556',
+                              'Edit Profile Picture',
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w700),
+                                  fontSize: 13, fontWeight: FontWeight.w700),
                               colors: [Colors.purpleAccent, Colors.blue],
                             ),
                           ],
