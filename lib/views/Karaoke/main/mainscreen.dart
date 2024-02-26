@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:star_maker/utils/colors.dart';
 import 'package:star_maker/views/Karaoke/Room/roomlist_view.dart';
+import 'package:star_maker/views/Karaoke/profile/profile_view.dart';
 import 'package:star_maker/views/auth/login_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
@@ -27,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
       CategoriesView(),
       RoomListView(),
       LoginView(),
-      LoginView(),
+      ProfileView(),
     ];
     return Scaffold(
       body: SafeArea(
