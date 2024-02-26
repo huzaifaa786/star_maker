@@ -1,15 +1,15 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class ProfileView extends StatefulWidget {
+  const ProfileView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<ProfileView> createState() => _ProfileViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class _LoginViewState extends State<LoginView> {
               gradient: LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
-            colors: [Color(0xFFD657EC), Color(0xFF4F84DF)],
+            colors: [Color.fromARGB(255, 163, 84, 177), Colors.blueAccent],
           )),
           child: Column(
             children: [Text('hello')],
