@@ -94,6 +94,7 @@ class _RoomListViewState extends State<RoomListView> {
                     ),
                   ),
                   //////////////////////////////////
+
                   Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
