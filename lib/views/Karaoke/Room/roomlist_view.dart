@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:star_maker/routes/routes.dart';
+import 'package:star_maker/utils/colors.dart';
 import 'package:star_maker/views/Karaoke/component/common_button.dart';
 import 'package:star_maker/views/Karaoke/component/room_list.dart';
 import 'package:star_maker/views/karaoke/component/gradient_text.dart';
@@ -50,15 +52,87 @@ class _RoomListViewState extends State<RoomListView> {
               ),
               //button row
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // CommonButton(
-                  //   picture: 'assets/images/Plus.png',
-                  //   name: 'Create a room',
-                  // ),
-                  // CommonButton(
-                  //   picture: 'assets/images/Plus.png',
-                  //   name: 'Create a room',
-                  // )
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide(
+                        width: 2,
+                        color: lightblueAccent,
+                      ),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color(0xFFEFD2F4),
+                            Color(0xFFCCE4F7),
+                          ],
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Gap(10),
+                          Image.asset('assets/images/Plus.png'),
+                          Gap(5),
+                          GradientTextStatic(
+                            'Create a room',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w800),
+                            colors: [
+                              Colors.purpleAccent,
+                              Colors.blue,
+                            ],
+                          ),
+                          Gap(11),
+                        ],
+                      ),
+                    ),
+                  ),
+                  //////////////////////////////////
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide(
+                        width: 2,
+                        color: lightblueAccent,
+                      ),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color(0xFFEFD2F4),
+                            Color(0xFFCCE4F7),
+                          ],
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Gap(10),
+                          Image.asset('assets/images/malegroup.png'),
+                          Gap(5),
+                          GradientTextStatic(
+                            'Join a room',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w800),
+                            colors: [
+                              Colors.purpleAccent,
+                              Colors.blue,
+                            ],
+                          ),
+                          Gap(11),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
               //2nd divider
@@ -92,9 +166,11 @@ class _RoomListViewState extends State<RoomListView> {
                   itemCount: 15,
                   itemBuilder: (BuildContext context, int index) {
                     return RoomListContainer(
-                      headingname: 'Black Pink',
-                      subheading: 'By Nicki Minaj',
-                      ontap: () {},
+                      headingname: 'Lets Sing !',
+                      subheading: 'Created by Mohamed',
+                      ontap: () {
+                        AppRoutes.navigateTocategorydetailView(context);
+                      },
                       backimg: 'assets/images/Ellipse1.png',
                       imgfirst: 'assets/images/Ellipse 2.png',
                       imgsecond: 'assets/images/Ellipse 3.png',
