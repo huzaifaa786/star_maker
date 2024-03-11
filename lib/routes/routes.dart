@@ -27,34 +27,33 @@ class AppRoutes {
       context,
       MaterialPageRoute(builder: (context) => const SoloSingingView()),
     );
-    
   }
-   static void navigateToLoginView(BuildContext context) {
+
+  static void navigateToLoginView(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const LoginView()),
     );
-    
   }
+
   static void navigateToMainView(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MainScreen()),
+      MaterialPageRoute(builder: (context) => const HomeView()),
     );
-    
   }
+
   static void navigateTocategorydetailView(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const CategoryDetailView()),
     );
-    
   }
+
   static void navigateTosigningView(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SigningView()),
     );
-    
   }
 }

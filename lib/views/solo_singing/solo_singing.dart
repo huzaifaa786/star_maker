@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:star_maker/apis/room_api.dart';
 import 'package:star_maker/models/song_model.dart';
@@ -42,8 +43,20 @@ class _SoloSingViewState extends State<SoloSingView> {
   String lyricsContent = "";
   String musicPath = "";
   String lyricsPath = "";
+
+  // Pitch Configuration
+  ZegoVoiceChangerPreset? _changerPreset;
+  late bool _changerCustomParam;
+  late double _pitch;
+  late bool _changerPresetEnable;
+  late bool _pitchEnable;
+
+  // Record path
+  String? recordPath;
+
   var lyricUI = UINetease();
   var playing = false;
+  var isStarted = false;
   var lyricModel = LyricsModelBuilder.create().bindLyricToMain('').getModel();
   ZegoEngineProfile profile = ZegoEngineProfile(
     653933933,
@@ -53,15 +66,71 @@ class _SoloSingViewState extends State<SoloSingView> {
 
   ZegoMediaPlayer? player;
 
+  void pauseSong() {
+    player?.pause();
+    setState(() {
+      playing = false;
+    });
+  }
+
+  void resumeSong() {
+    !isStarted ? startSinging() : null;
+    player?.resume();
+    setState(() {
+      playing = true;
+    });
+  }
+
+  void restartSong() {
+    if (player != null) {
+      ZegoExpressEngine.instance.destroyMediaPlayer(player!);
+    }
+    stopRecording();
+
+    player?.seekTo(0);
+    // player?.start();
+    setState(() {
+      playProgress = 0;
+      playing = false;
+      // playing = true;
+    });
+    if (recordPath != null) startPlay(recordPath!);
+  }
+
+  void onCapturedDataRecordStateUpdate(ZegoDataRecordState state, int errorCode,
+      ZegoDataRecordConfig config, ZegoPublishChannel channel) {
+    print("RECORD PATH: $recordPath");
+    if (state == ZegoDataRecordState.NoRecord) {
+      print('RECORDING: No record noooooooooooooooooooooooooooooo ....');
+    } else if (state == ZegoDataRecordState.Recording) {
+      print('RECORDING: record yessssssssssssssssssssssssssssssss ...');
+    } else {
+      print('RECORDING: saved saveddddddddddddddddddddddddddd ...');
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return SimpleDialog(
+              titlePadding: EdgeInsets.all(0),
+              title: Center(child: Text('Recording')),
+              children: [SelectableText('Log path:$recordPath')],
+            );
+          });
+    }
+    setState(() {});
+  }
+
   loginRoom() async {
     await createRoom();
     await Permission.microphone.request();
     if (widget.isHost == true) {
       ZegoExpressEngine.onRoomOnlineUserCountUpdate =
           onRoomOnlineUserCountUpdate;
+      ZegoExpressEngine.onCapturedDataRecordStateUpdate =
+          onCapturedDataRecordStateUpdate;
     }
 
     await ZegoExpressEngine.createEngineWithProfile(profile);
+
     setEventHandler();
     userID = widget.userID;
     userName = widget.userID;
@@ -79,7 +148,6 @@ class _SoloSingViewState extends State<SoloSingView> {
   }
 
   onRoomOnlineUserCountUpdate(String roomId, int count) async {
-
     await roomApi.updateRoomCount(roomId, count);
   }
 
@@ -194,6 +262,7 @@ class _SoloSingViewState extends State<SoloSingView> {
     await loadMusicResource();
     setState(() {
       playing = true;
+      isStarted = true;
     });
     Random random = new Random();
     int randomInt = random.nextInt(1000);
@@ -201,6 +270,7 @@ class _SoloSingViewState extends State<SoloSingView> {
 
     await ZegoExpressEngine.instance.muteMicrophone(false);
     await ZegoExpressEngine.instance.startPublishingStream(streamID);
+    startRecording();
   }
 
   createMediaPlayer() async {
@@ -232,10 +302,104 @@ class _SoloSingViewState extends State<SoloSingView> {
     }
   }
 
+  Widget customSlider(
+      {required double value,
+      required Function(double)? onChanged,
+      double max = 100.0,
+      double min = 0.0,
+      bool enable = true}) {
+    return Slider(
+      value: value,
+      onChanged: enable ? onChanged : null,
+      max: max,
+      min: min,
+      activeColor: enable ? Colors.blue : Colors.grey,
+      inactiveColor: enable ? Colors.blue[100] : Colors.grey,
+    );
+  }
+
+  void onVoiceChangerPreset(ZegoVoiceChangerPreset? mode) {
+    if (mode != null) {
+      setState(() {
+        _changerPreset = mode;
+      });
+      ZegoExpressEngine.instance.setVoiceChangerPreset(mode);
+    }
+  }
+
+  void onPitchChanged(double value) {
+    setState(() {
+      _pitch = value;
+      ZegoExpressEngine.instance
+          .setVoiceChangerParam(ZegoVoiceChangerParam(_pitch));
+    });
+  }
+
+  void onChangerCustomParamSwitchChanged(bool b) {
+    setState(() {
+      _changerCustomParam = b;
+      _changerPresetEnable = !_changerCustomParam;
+      _pitchEnable = _changerCustomParam;
+    });
+
+    if (b) {
+      ZegoExpressEngine.instance
+          .setVoiceChangerParam(ZegoVoiceChangerParam(_pitch));
+    } else {
+      ZegoExpressEngine.instance.setVoiceChangerPreset(_changerPreset!);
+    }
+  }
+
+  void startRecording() {
+    if (recordPath != null) {
+      ZegoExpressEngine.instance.startRecordingCapturedData(
+          ZegoDataRecordConfig(recordPath!, ZegoDataRecordType.OnlyAudio));
+    }
+  }
+
+  void stopRecording() {
+    print('STPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP');
+    ZegoExpressEngine.instance.stopRecordingCapturedData();
+  }
+
+  startPlay(String path) async {
+    print('START PLATYPE: ' + path);
+    if (player == null) {
+      player = await ZegoExpressEngine.instance.createMediaPlayer();
+      await ZegoExpressEngine.instance.muteMicrophone(false);
+    }
+
+    await player?.loadResource(path).then((value) => {
+          debugPrint("HELLO : ${value.errorCode.toString()}"),
+          if (value.errorCode == 0)
+            {
+              player!.start(),
+            }
+        });
+
+    // if (result != null && result.errorCode == 0) {
+    //   print('📥 MediaPlayer load resource: $path success');
+    //   player!.start();
+    //   print('📥 MediaPlayer start');
+    // } else {
+    //   print(
+    //       '📥 MediaPlayer load resource: $path fail, errorCode: ${result?.errorCode}');
+    // }
+  }
+
   @override
   void initState() {
+    _changerPreset = ZegoVoiceChangerPreset.None;
+    _changerCustomParam = false;
+    _pitch = 0.0;
+    _pitchEnable = false;
+    _changerPresetEnable = true;
     loadMusicLyricsData();
     loginRoom();
+    getExternalStorageDirectory().then((value) {
+      recordPath = value != null ? value.absolute.path + '/record.mp3' : null;
+    });
+
     super.initState();
   }
 
@@ -244,6 +408,7 @@ class _SoloSingViewState extends State<SoloSingView> {
     if (widget.isHost == true) {
       roomApi.endRoom(widget.roomID);
     }
+    stopRecording();
     ZegoExpressEngine.destroyEngine();
     super.dispose();
   }
@@ -256,13 +421,62 @@ class _SoloSingViewState extends State<SoloSingView> {
         children: [
           isHost ? buildReaderWidget() : buildAudienceReaderWidget(),
           isHost
-              ? MaterialButton(
-                  child: Text('Start Singing'),
-                  onPressed: () {
-                    startSinging();
-                  },
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon:
+                          playing ? Icon(Icons.pause) : Icon(Icons.play_arrow),
+                      onPressed: playing ? pauseSong : resumeSong,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.replay),
+                      onPressed: restartSong,
+                    ),
+                  ],
                 )
-              : Text(''),
+              : SizedBox(),
+          isHost
+              ? Container(
+                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  child: Column(
+                    children: [
+                      Row(children: [
+                        Text('Preset'),
+                        DropdownButton(
+                            value: _changerPreset,
+                            onChanged: onVoiceChangerPreset,
+                            items: _changerPresetEnable
+                                ? ZegoVoiceChangerPreset.values.map<
+                                    DropdownMenuItem<
+                                        ZegoVoiceChangerPreset>>((value) {
+                                    return DropdownMenuItem<
+                                        ZegoVoiceChangerPreset>(
+                                      child: Text(
+                                          '${value.toString().replaceAll('ZegoVoiceChangerPreset.', '')}'),
+                                      value: value,
+                                    );
+                                  }).toList()
+                                : <DropdownMenuItem<ZegoVoiceChangerPreset>>[]),
+                        Expanded(child: Container()),
+                        Text('Custom parameter'),
+                        Switch(
+                            value: _changerCustomParam,
+                            onChanged: onChangerCustomParamSwitchChanged),
+                      ]),
+                      Row(children: [
+                        Text('pitch'),
+                        Expanded(
+                            child: customSlider(
+                                value: _pitch,
+                                onChanged: onPitchChanged,
+                                min: -8.0,
+                                max: 8.0,
+                                enable: _pitchEnable)),
+                      ]),
+                    ],
+                  ))
+              : SizedBox()
         ],
       )),
     );
@@ -377,3 +591,68 @@ class _LyricsWidgetState extends State<LyricsWidget> {
     );
   }
 }
+
+// class AudioEffectsBottomSheet extends StatefulWidget {
+//   final ZegoExpressEngine zegoEngine;
+
+//   AudioEffectsBottomSheet({required this.zegoEngine});
+
+//   @override
+//   _AudioEffectsBottomSheetState createState() =>
+//       _AudioEffectsBottomSheetState();
+// }
+
+// class _AudioEffectsBottomSheetState extends State<AudioEffectsBottomSheet> {
+//   double _pitchValue = 0.0;
+//   double _echoValue = 0.0;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     // Initialize with default values or retrieve from the Zego SDK
+//     ZegoVoiceChangerParam voiceChangerParam = new ZegoVoiceChangerParam(0.0);
+//     _pitchValue = voiceChangerParam.pitch;
+
+//     _echoValue = widget.zegoEngine.getEchoIntensity();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return SingleChildScrollView(
+//       child: Padding(
+//         padding: EdgeInsets.all(16.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.stretch,
+//           children: [
+//             Text("Pitch"),
+//             Slider(
+//               value: _pitchValue,
+//               min: -3.0,
+//               max: 3.0,
+//               onChanged: (value) {
+//                 setState(() {
+//                   _pitchValue = value;
+//                 });
+//                 widget.zegoEngine.setPitchShift(value);
+//               },
+//             ),
+//             SizedBox(height: 16),
+//             Text("Echo"),
+//             Slider(
+//               value: _echoValue,
+//               min: 0.0,
+//               max: 1.0,
+//               onChanged: (value) {
+//                 setState(() {
+//                   _echoValue = value;
+//                 });
+//                 widget.zegoEngine.setEchoIntensity(value);
+//               },
+//             ),
+//             // Add more controls for other effects as needed
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
