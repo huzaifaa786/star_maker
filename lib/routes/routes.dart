@@ -1,4 +1,7 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/material.dart';
+import 'package:star_maker/views/Karaoke/Room/roomlist_view.dart';
 import 'package:star_maker/views/auth/login_view.dart';
 import 'package:star_maker/views/home/home_view.dart';
 import 'package:star_maker/views/karaoke/main/fragment/categorydetail/category_detail.dart';
@@ -56,4 +59,10 @@ class AppRoutes {
       MaterialPageRoute(builder: (context) => const SigningView()),
     );
   }
+  static void navigateToroomlistView(BuildContext context){
+      Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RoomListView()),
+    );
+    }
 }

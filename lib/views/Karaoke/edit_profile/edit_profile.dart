@@ -7,14 +7,14 @@ import 'package:star_maker/views/Karaoke/component/button.dart';
 import 'package:star_maker/views/Karaoke/component/main_input.dart';
 import 'package:star_maker/views/karaoke/component/gradient_text.dart';
 
-class SignupView extends StatefulWidget {
-  const SignupView({super.key});
+class EditProfileView extends StatefulWidget {
+  const EditProfileView({super.key});
 
   @override
-  State<SignupView> createState() => _SignupViewState();
+  State<EditProfileView> createState() => _EditProfileViewState();
 }
 
-class _SignupViewState extends State<SignupView> {
+class _EditProfileViewState extends State<EditProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,39 +75,42 @@ class _SignupViewState extends State<SignupView> {
                                   BorderRadius.all(Radius.circular(40))),
                           child: Column(
                             children: [
-                              Gap(30),
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.08,
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  GradientTextStatic('Add Profile Picture',
+                                  GradientTextStatic('Edit Profile Picture',
                                       style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400),
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w700),
                                       colors: [
                                         Colors.purple,
                                         Colors.blueAccent
                                       ]),
                                 ],
                               ),
-                              Gap(10),
+                              Gap(20),
                               InputField(
                                 lable: 'Username',
                               ),
-                              Gap(5),
+                              Gap(20),
+                              InputField(
+                                lable: 'Bio',
+                              ),
+                              Gap(20),
                               InputField(
                                 lable: 'Email Address',
                               ),
-                              Gap(5),
+                              Gap(20),
                               InputField(
                                 lable: 'Birthdate',
                               ),
-                              Gap(5),
+                              Gap(20),
                               InputField(
                                 lable: 'Gender',
-                              ),
-                              Gap(5),
-                              InputField(
-                                lable: 'Password',
                                 obscure: true,
                               ),
                               Gap(30),
